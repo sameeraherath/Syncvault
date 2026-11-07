@@ -4,9 +4,10 @@ import ConnectDiagram from './ConnectDiagram.astro';
 import { SITE } from '../site';
 ---
 
-<section id="top" class="relative overflow-hidden px-5 pb-24 pt-16 sm:pt-20">
+<!-- Pulled up under the transparent sticky nav (-mt-16) so the glow starts at the very top. -->
+<section id="top" class="relative -mt-16 overflow-hidden px-5 pb-24 pt-32 sm:pt-36">
   <div
-    class="hero-glow pointer-events-none absolute inset-x-0 -top-40 -z-10 h-[520px]"
+    class="hero-glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[640px]"
     aria-hidden="true"
   ></div>
   <div class="mx-auto max-w-5xl text-center">
@@ -44,6 +45,6 @@ import { SITE } from '../site';
 
 <style>
   .hero-glow {
-    background: radial-gradient(60% 60% at 50% 30%, rgb(37 99 235 / 0.1), transparent 70%);
+    background: radial-gradient(70% 75% at 50% 0%, rgb(37 99 235 / 0.12), transparent 70%);
   }
 </style>
