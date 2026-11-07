@@ -1,67 +1,262 @@
 ---
-const steps = [
-  {
-    title: 'Create your vault',
-    body: "Pick one strong password. It's the only key to your files — we never see it.",
-  },
-  {
-    title: 'Connect your clouds',
-    body: 'Sign in to the accounts you already use. Add as many as you like — personal, work, family.',
-  },
-  {
-    title: 'Pick folders. Done.',
-    body: 'Choose what to protect. Keep working in your usual apps — Syncvault quietly does the rest.',
-  },
+import Icon from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
+
+const accounts = [
+  ['Google Drive', 'personal'],
+  ['OneDrive', 'work'],
+  ['Dropbox', 'family'],
 ];
 ---
 
-<section id="how-it-works" class="bg-page px-5 py-24" data-reveal>
+<section id="how-it-works" class="bg-page px-5 py-28" data-reveal>
   <div class="mx-auto max-w-5xl">
-    <p class="eyebrow reveal text-center">How it works</p>
-    <h2 class="display reveal mt-3 text-center text-4xl sm:text-5xl [--i:1]">
-      Set up in three minutes.
-      <br />
-      Then forget about it.
-    </h2>
-    <ol class="relative mt-14 grid gap-5 md:grid-cols-3">
-      <span
-        class="steps-line absolute left-[16%] right-[16%] top-[3.25rem] hidden h-px md:block"
-        aria-hidden="true"
-      ></span>
-      {steps.map((s, i) => (
-        <li class:list={['card reveal relative p-7', `[--i:${i + 2}]`]}>
-          <span class="relative grid size-9 place-items-center rounded-full bg-primary-light text-sm font-semibold text-primary-text">
-            {i + 1}
+    <div class="grid items-end gap-6 md:grid-cols-[1.4fr_1fr]">
+      <SectionHeader index="01" label="How it works">
+        Set up in three minutes.
+        <br />
+        Then forget about it.
+      </SectionHeader>
+      <p class="reveal max-w-sm leading-relaxed text-text-muted [--i:2]">
+        No account with us, no settings to learn. Three steps, then Syncvault quietly does the rest.
+      </p>
+    </div>
+
+    <!-- Timeline track -->
+    <div class="relative mt-16 hidden h-px bg-border md:block" aria-hidden="true">
+      <span class="track-fill absolute inset-y-0 left-0 w-full bg-primary"></span>
+      {['left-0', 'left-[calc(33.333%+0.667rem)]', 'left-[calc(66.667%+1.333rem)]'].map(
+        (pos, i) => (
+          <span
+            class:list={[
+              'track-dot absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-primary bg-white',
+              pos,
+              `[--i:${i}]`,
+            ]}
+          />
+        ),
+      )}
+    </div>
+
+    <ol class="mt-8 grid gap-10 md:mt-6 md:grid-cols-3 md:gap-8">
+      <!-- 1. Create your vault -->
+      <li class="reveal [--i:2]">
+        <p class="font-mono text-xs text-primary">01</p>
+        <div class="ill spot" aria-hidden="true">
+          <div class="flex items-center gap-3 rounded-xl border border-border bg-white px-3 py-2.5 shadow-sm">
+            <Icon name="key" class="size-4 text-text-muted" />
+            <span class="flex gap-1.5">
+              {Array.from({ length: 10 }, (_, k) => (
+                <i class:list={['pw-dot', `[--k:${k}]`]} />
+              ))}
+            </span>
+            <span class="caret ml-0.5 h-4 w-px bg-primary"></span>
+          </div>
+          <div class="mt-3 grid grid-cols-4 gap-1.5">
+            {Array.from({ length: 4 }, (_, k) => (
+              <i class:list={['meter', `[--k:${k}]`]} />
+            ))}
+          </div>
+          <p class="mt-2 font-mono text-[11px] text-text-muted">
+            strength: <span class="strong font-medium text-primary">strong</span>
+          </p>
+        </div>
+        <h3 class="mt-6 text-lg font-semibold">Create your vault</h3>
+        <p class="mt-2 text-sm leading-relaxed text-text-muted">
+          Pick one strong password. It's the only key to your files — we never see it.
+        </p>
+      </li>
+
+      <!-- 2. Connect your clouds -->
+      <li class="reveal [--i:3]">
+        <p class="font-mono text-xs text-primary">02</p>
+        <div class="ill spot" aria-hidden="true">
+          <ul class="grid gap-2">
+            {accounts.map(([name, kind], k) => (
+              <li
+                class:list={[
+                  'acct flex items-center gap-2.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] shadow-sm',
+                  `[--k:${k}]`,
+                ]}
+              >
+                <Icon name="cloud" class="size-4 text-primary" />
+                <span class="font-medium">{name}</span>
+                <span class="font-mono text-[11px] text-text-muted">{kind}</span>
+                <Icon name="check" class="acct-check ml-auto size-4 text-primary" />
+              </li>
+            ))}
+          </ul>
+        </div>
+        <h3 class="mt-6 text-lg font-semibold">Connect your clouds</h3>
+        <p class="mt-2 text-sm leading-relaxed text-text-muted">
+          Sign in to the accounts you already use. Add as many as you like — personal, work, family.
+        </p>
+      </li>
+
+      <!-- 3. Pick folders -->
+      <li class="reveal [--i:4]">
+        <p class="font-mono text-xs text-primary">03</p>
+        <div class="ill spot flex flex-col items-center justify-center" aria-hidden="true">
+          <div class="relative">
+            <svg
+              class="h-16 w-20 text-text"
+              viewBox="0 0 80 64"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 12a4 4 0 0 1 4-4h18l6 7h40a4 4 0 0 1 4 4v33a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"
+                fill="#fff"
+              />
+            </svg>
+            <span class="lock-badge absolute -bottom-2 -right-3 grid size-8 place-items-center rounded-full bg-ink text-white shadow-md">
+              <svg
+                class="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path class="step-shackle" d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+            </span>
+          </div>
+          <p class="mt-4 font-mono text-[11px] text-text-muted">~/Documents</p>
+          <span class="synced mt-2 inline-flex items-center gap-1 rounded-full bg-primary-light px-2.5 py-0.5 text-xs font-medium text-primary-text">
+            <Icon name="check" class="size-3.5" /> Synced
           </span>
-          <h3 class="mt-6 font-semibold">{s.title}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">{s.body}</p>
-        </li>
-      ))}
+        </div>
+        <h3 class="mt-6 text-lg font-semibold">Pick folders. Done.</h3>
+        <p class="mt-2 text-sm leading-relaxed text-text-muted">
+          Choose what to protect. Keep working in your usual apps — Syncvault quietly does the rest.
+        </p>
+      </li>
     </ol>
   </div>
 </section>
 
 <style>
-  .steps-line {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--color-border) 10%,
-      var(--color-border) 90%,
-      transparent
-    );
+  .ill {
+    margin-top: 0.75rem;
+    height: 11rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1.25rem;
+    background:
+      radial-gradient(rgb(17 24 39 / 0.06) 1px, transparent 1px) 0 0 / 16px 16px,
+      #fbfcfd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .pw-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--color-text);
+  }
+  .meter {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-primary);
+  }
+  .track-fill {
     transform-origin: left;
-    z-index: 0;
   }
-  ol > li {
-    z-index: 1;
+  .track-dot {
+    margin-left: -6px;
   }
+
+  /* Animated states play once the section is visible; the default (no JS / reduced motion)
+     is the finished state. Step timing: 1 → 0.3s, 2 → 1.3s, 3 → 2.3s. */
   @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-    .steps-line {
-      transition: transform 1.2s 0.5s var(--ease-out-soft);
+    .track-fill {
+      transition: transform 2.6s 0.2s linear;
     }
-    section:not(:global(.is-visible)) .steps-line {
+    .track-dot {
+      transition:
+        background-color 0.3s,
+        border-color 0.3s;
+      transition-delay: calc(0.2s + var(--i) * 1.05s);
+    }
+    .pw-dot {
+      transition: transform 0.2s;
+      transition-delay: calc(0.4s + var(--k) * 0.07s);
+    }
+    .caret {
+      animation: blink 1s steps(1) infinite;
+    }
+    .meter {
+      transition: background-color 0.3s;
+      transition-delay: calc(1.1s + var(--k) * 0.12s);
+    }
+    .strong {
+      transition: opacity 0.3s 1.6s;
+    }
+    .acct {
+      transition:
+        transform 0.5s var(--ease-out-soft),
+        opacity 0.4s;
+      transition-delay: calc(1.3s + var(--k) * 0.2s);
+    }
+    .acct-check {
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition-delay: calc(1.6s + var(--k) * 0.2s);
+    }
+    .step-shackle {
+      transition: transform 0.4s 2.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .lock-badge {
+      transition: transform 0.4s 2.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .synced {
+      transition:
+        transform 0.4s 2.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.3s 2.8s;
+    }
+
+    section:not(:global(.is-visible)) .track-fill {
       transform: scaleX(0);
+    }
+    section:not(:global(.is-visible)) .track-dot {
+      background: #fff;
+      border-color: var(--color-border);
+    }
+    section:not(:global(.is-visible)) .pw-dot {
+      transform: scale(0);
+    }
+    section:not(:global(.is-visible)) .meter {
+      background: var(--color-border);
+    }
+    section:not(:global(.is-visible)) .strong {
+      opacity: 0;
+    }
+    section:not(:global(.is-visible)) .acct {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    section:not(:global(.is-visible)) .acct-check {
+      transform: scale(0);
+    }
+    section:not(:global(.is-visible)) .step-shackle {
+      transform: translateY(-3px);
+    }
+    section:not(:global(.is-visible)) .lock-badge {
+      transform: scale(0);
+    }
+    section:not(:global(.is-visible)) .synced {
+      opacity: 0;
+      transform: translateY(6px) scale(0.9);
+    }
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
     }
   }
 </style>

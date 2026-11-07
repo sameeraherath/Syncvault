@@ -1,9 +1,15 @@
 ---
 import Icon from './Icon.astro';
+import CipherField from './CipherField.astro';
 import { SITE } from '../site';
 ---
 
-<section id="download" class="bg-page px-5 py-28 text-center" data-reveal>
+<section
+  id="download"
+  class="relative isolate overflow-hidden bg-page px-5 py-28 text-center"
+  data-reveal
+>
+  <CipherField class="-z-10" seed={42} rows={12} />
   <span class="lock reveal reveal-scale mx-auto grid size-14 place-items-center rounded-full bg-ink text-white">
     <svg
       class="size-6"
@@ -19,14 +25,20 @@ import { SITE } from '../site';
       <path class="shackle" d="M8 11V7a4 4 0 0 1 8 0v4" />
     </svg>
   </span>
-  <h2 class="display reveal mt-6 text-4xl sm:text-6xl [--i:1]">Your files deserve a lock.</h2>
+  <h2 class="display reveal mt-6 text-4xl sm:text-6xl [--i:1]">
+    <span data-decrypt="reveal" class="[--dc:var(--color-text)]">
+      Your files deserve a lock.
+    </span>
+  </h2>
   <p class="reveal mt-4 text-text-muted [--i:2]">Free forever. No sign-up. Takes three minutes.</p>
   <div class="reveal mt-8 [--i:3]">
     <a href={SITE.links.download} class="btn-primary">
       <Icon name="download" class="size-4" /> Download for Linux
     </a>
   </div>
-  <p class="reveal mt-4 text-xs text-text-muted [--i:4]">Windows &amp; Mac — coming soon</p>
+  <p class="reveal mt-4 font-mono text-[11px] text-text-muted [--i:4]">
+    Windows &amp; Mac — coming soon
+  </p>
 </section>
 
 <style>

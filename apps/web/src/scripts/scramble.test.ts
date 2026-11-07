@@ -22,3 +22,12 @@ describe('scrambleFrame', () => {
     expect(frame.slice(3)).not.toBe('def');
   });
 });
+
+describe('randomCipher', () => {
+  it('returns base32-like noise of the requested length', async () => {
+    const { randomCipher } = await import('./scramble');
+    const c = randomCipher(12);
+    expect(c).toHaveLength(12);
+    expect(c).toMatch(/^[a-z0-9]+$/);
+  });
+});

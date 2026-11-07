@@ -1,25 +1,19 @@
 ---
 import Icon, { type IconName } from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
 import { SITE } from '../site';
 
-const values: { icon: IconName; title: string; body: string }[] = [
+const values = [
   {
-    icon: 'heart',
     title: 'Free, forever',
     body: 'Locking your files will never cost money. Privacy is not a luxury.',
   },
   {
-    icon: 'ban',
     title: 'Nothing to sell',
     body: "No ads and no tracking. We can't see your files, so we can't sell them.",
   },
+  { title: 'Open for everyone', body: 'Anyone can check how Syncvault works. Nothing is hidden.' },
   {
-    icon: 'eye',
-    title: 'Open for everyone',
-    body: 'Anyone can check how Syncvault works. Nothing is hidden.',
-  },
-  {
-    icon: 'vote',
     title: 'You have a say',
     body: 'New features are chosen together with the people who use them.',
   },
@@ -57,62 +51,134 @@ const helps: { icon: IconName; title: string; body: string; href: string }[] = [
     href: SITE.links.source,
   },
 ];
+// "Built in the open": a tiny commit graph (x positions of commits on the main line).
+const commits = [40, 120, 200, 300, 380, 470, 560, 640, 740, 830, 920];
 ---
 
-<section id="community" class="bg-ink px-5 py-24 text-white" data-reveal>
+<section id="community" class="relative overflow-hidden bg-ink px-5 py-28 text-white" data-reveal>
   <div class="mx-auto max-w-5xl">
-    <p class="reveal text-sm font-semibold text-primary-bright">Community</p>
-    <h2 class="display reveal mt-3 max-w-xl text-4xl sm:text-5xl [--i:1]">
-      Made by people like you. <span class="text-primary-bright">For everyone.</span>
-    </h2>
-    <p class="reveal mt-5 max-w-lg leading-relaxed text-white/70 [--i:2]">
-      Syncvault isn't owned by a big company. It's built in the open by volunteers and funded by the
-      people who use it — so it will always work for you.
-    </p>
+    <div class="grid items-end gap-6 md:grid-cols-[1.4fr_1fr]">
+      <SectionHeader index="04" label="Community" dark>
+        Made by people like you. <span class="text-primary-bright">For everyone.</span>
+      </SectionHeader>
+      <p class="reveal max-w-sm leading-relaxed text-white/65 [--i:2]">
+        Syncvault isn't owned by a big company. It's built in the open by volunteers and funded by
+        the people who use it — so it will always work for you.
+      </p>
+    </div>
 
-    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Built in the open: commit graph -->
+    <div class="mt-12" aria-hidden="true">
+      <svg class="graph h-auto w-full" viewBox="0 0 1000 56" fill="none">
+        <path class="g-line" d="M0 18 H1000" pathLength="1" />
+        <path
+          class="g-line g-branch"
+          d="M200 18 C240 18 250 42 290 42 H520 C560 42 570 18 610 18"
+          pathLength="1"
+        />
+        {commits.map((x, i) => (
+          <circle class:list={['g-dot', `[--k:${i}]`]} cx={x} cy="18" r="5" />
+        ))}
+        {[340, 430].map((x, i) => (
+          <circle class:list={['g-dot g-dot-b', `[--k:${i + 3}]`]} cx={x} cy="42" r="5" />
+        ))}
+      </svg>
+      <p class="mt-2 font-mono text-[11px] text-white/45">
+        // built in the open — every change is public
+      </p>
+    </div>
+
+    <ol class="mt-14 grid gap-x-12 md:grid-cols-2">
       {values.map((v, i) => (
-        <li class:list={['reveal rounded-2xl border border-white/10 p-6', `[--i:${i + 3}]`]}>
-          <Icon name={v.icon} class="size-5 text-primary-bright" />
-          <h3 class="mt-4 font-semibold">{v.title}</h3>
-          <p class="mt-1.5 text-sm leading-relaxed text-white/65">{v.body}</p>
+        <li class:list={['reveal flex gap-6 border-t border-white/10 py-7', `[--i:${i + 2}]`]}>
+          <span class="font-mono text-sm text-primary-bright">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <h3 class="text-xl font-semibold tracking-tight">{v.title}</h3>
+            <p class="mt-1.5 leading-relaxed text-white/60">{v.body}</p>
+          </div>
         </li>
       ))}
-    </ul>
+    </ol>
 
-    <h3 class="reveal mt-16 text-xl font-semibold tracking-tight [--i:4]">
+    <h3 class="reveal mt-16 text-2xl font-semibold tracking-tight [--i:4]">
       Want to help? You don't need to be technical.
     </h3>
-    <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="mt-6 grid gap-x-12 md:grid-cols-2">
       {helps.map((h, i) => (
         <li class:list={['reveal', `[--i:${i + 5}]`]}>
           <a
             href={h.href}
-            class="help flex min-h-touch items-center gap-4 rounded-2xl bg-ink-raised px-5 py-4"
+            class="help group flex min-h-touch items-center gap-4 border-b border-white/10 py-4"
           >
             <Icon name={h.icon} class="size-5 shrink-0 text-primary-bright" />
-            <span>
-              <span class="block text-sm font-semibold">{h.title}</span>
-              <span class="block text-xs text-white/60">{h.body}</span>
+            <span class="flex-1">
+              <span class="block font-semibold">{h.title}</span>
+              <span class="block text-sm text-white/55">{h.body}</span>
             </span>
+            <Icon name="arrow" class="arrow size-5 text-white/40" />
           </a>
         </li>
       ))}
     </ul>
-    <p class="reveal mt-8 text-sm text-white/55 [--i:8]">
-      We're just getting started — the first helpers' names go right here.
+    <p class="reveal mt-8 font-mono text-xs text-white/45 [--i:8]">
+      // we're just getting started — the first helpers' names go right here.
     </p>
   </div>
 </section>
 
 <style>
   .help {
-    transition:
-      transform 0.25s var(--ease-out-soft),
-      background-color 0.25s;
+    transition: padding 0.3s var(--ease-out-soft);
   }
   .help:hover {
-    background: #2a2a30;
-    transform: translateY(-2px);
+    padding-left: 0.5rem;
+  }
+  .arrow {
+    transition:
+      transform 0.3s var(--ease-out-soft),
+      color 0.3s;
+  }
+  .help:hover .arrow,
+  .help:focus-visible .arrow {
+    transform: translateX(4px);
+    color: var(--color-primary-bright);
+  }
+  .g-line {
+    stroke: rgb(255 255 255 / 0.18);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+  }
+  .g-branch {
+    stroke: rgb(96 165 250 / 0.6);
+  }
+  .g-dot {
+    fill: var(--color-ink);
+    stroke: rgb(255 255 255 / 0.5);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .g-dot-b {
+    stroke: var(--color-primary-bright);
+  }
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    .g-line {
+      transition: stroke-dashoffset 1.6s 0.2s var(--ease-out-soft);
+    }
+    .g-branch {
+      transition-delay: 0.8s;
+    }
+    .g-dot {
+      transition: opacity 0.3s;
+      transition-delay: calc(0.3s + var(--k) * 0.12s);
+    }
+    section:not(:global(.is-visible)) .g-line {
+      stroke-dashoffset: 1;
+    }
+    section:not(:global(.is-visible)) .g-dot {
+      opacity: 0;
+    }
   }
 </style>

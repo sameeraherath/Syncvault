@@ -5,7 +5,8 @@ import Icon, { type IconName } from './Icon.astro';
  * "How Syncvault connects everything".
  * Desktop: a fixed-ratio stage (viewBox 1000×360). Cards are placed in % of the stage and one SVG
  * draws thin 1px curves between them, so lines always meet the cards at any width.
- * Grey dots = readable files travelling into Syncvault; blue dots = locked data leaving it.
+ * File chips (src/scripts/flow.ts) carry readable names into Syncvault and leave as blue
+ * ciphertext. Without JS, SMIL dots show the same flow; with reduced motion it is static.
  * Mobile: the same story stacked vertically.
  */
 interface Node {
@@ -60,18 +61,26 @@ const stores: Node[] = [
   },
 ];
 
-// Curves: card edge → vault edge (x 320 → 400) and vault edge → card edge (x 600 → 680).
+// Curves: card edge → vault edge (x 270 → 400) and vault edge → card edge (x 600 → 730).
 const paths: Record<string, string> = {
-  l1: 'M320 130 C360 130 360 186 400 186',
-  l2: 'M320 206 C360 206 360 206 400 206',
-  l3: 'M320 282 C360 282 360 226 400 226',
-  r1: 'M600 176 C640 176 640 92 680 92',
-  r2: 'M600 196 C640 196 640 168 680 168',
-  r3: 'M600 216 C640 216 640 244 680 244',
-  r4: 'M600 236 C640 236 640 320 680 320',
+  l1: 'M270 130 C335 130 335 186 400 186',
+  l2: 'M270 206 C335 206 335 206 400 206',
+  l3: 'M270 282 C335 282 335 226 400 226',
+  r1: 'M600 176 C665 176 665 92 730 92',
+  r2: 'M600 196 C665 196 665 168 730 168',
+  r3: 'M600 216 C665 216 665 244 730 244',
+  r4: 'M600 236 C665 236 665 320 730 320',
 };
 
 const outgoing = ['r1', 'r2', 'r3', 'r4'];
+
+// Example file names carried by the chips, per source card.
+const names: Record<string, string> = {
+  l1: 'passport.pdf,contract.pdf,taxes.xlsx',
+  l2: 'beach.jpg,birthday.mp4,family/',
+  l3: 'roadmap.pdf,budget.xlsx,logo.svg',
+};
+const allNames = Object.values(names).join(',');
 ---
 
 <div class="connect card relative overflow-hidden bg-page/60 p-6 sm:p-10" data-reveal>
@@ -87,6 +96,7 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
   <div
     class="stage relative mx-auto hidden aspect-[1000/360] max-w-4xl lg:block"
     aria-hidden="true"
+    data-flow="1100"
   >
     <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 1000 360" fill="none">
       {Object.entries(paths).map(([id, d]) => (
@@ -95,6 +105,9 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
           class:list={['line', `line-${id}`, id.startsWith('l') ? 'line-in' : 'line-out']}
           d={d}
           pathLength="1"
+          data-in={id.startsWith('l') ? '' : undefined}
+          data-out={id.startsWith('r') ? '' : undefined}
+          data-names={names[id]}
         />
       ))}
       {Object.entries(paths).map(([id, d]) => {
@@ -155,10 +168,10 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
     </svg>
 
     <p class="label absolute left-0 top-[23.33%] -translate-y-1/2">Your files</p>
-    <p class="label absolute left-[68%] top-[12.22%] -translate-y-1/2">Where they're stored</p>
+    <p class="label absolute left-[73%] top-[12.22%] -translate-y-1/2">Where they're stored</p>
 
     {files.map((n, i) => (
-      <div class:list={['absolute left-0 w-[32%] -translate-y-1/2', n.top]}>
+      <div class:list={['absolute left-0 z-10 w-[27%] -translate-y-1/2', n.top]}>
         <div class:list={['node reveal', `[--i:${i + 1}]`]} data-node={n.id}>
           <Icon name={n.icon} class="size-4 shrink-0 text-text-muted" />
           <span>
@@ -169,7 +182,7 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
       </div>
     ))}
 
-    <div class="absolute left-[40%] top-[57.22%] h-[38.89%] w-[20%] -translate-y-1/2">
+    <div class="absolute left-[40%] top-[57.22%] z-10 h-[38.89%] w-[20%] -translate-y-1/2">
       <div class="vault reveal reveal-scale h-full [--i:3]">
         <svg
           class="size-6"
@@ -192,8 +205,12 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
       </div>
     </div>
 
+    <p class="mono-note absolute left-[36%] top-[86%] w-[28%] text-center">
+      // scrambled before upload
+    </p>
+
     {stores.map((n, i) => (
-      <div class:list={['absolute left-[68%] w-[32%] -translate-y-1/2', n.top]}>
+      <div class:list={['absolute left-[73%] z-10 w-[27%] -translate-y-1/2', n.top]}>
         <div class:list={['node reveal', `[--i:${i + 4}]`]} data-node={n.id}>
           <Icon name={n.icon} class="size-4 shrink-0 text-primary" />
           <span>
@@ -206,7 +223,7 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
   </div>
 
   <!-- Mobile / tablet: vertical flow -->
-  <div class="mx-auto max-w-md lg:hidden" aria-hidden="true">
+  <div class="relative mx-auto max-w-md lg:hidden" aria-hidden="true" data-flow="1600">
     <p class="label mb-2">Your files</p>
     <div class="grid gap-2">
       {files.map((n, i) => (
@@ -220,7 +237,14 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
       ))}
     </div>
     <svg class="mx-auto my-1 h-14 w-6 overflow-visible" viewBox="0 0 24 56" fill="none">
-      <path id="cx-m1" class="line line-in" d="M12 0 V56" pathLength="1" />
+      <path
+        id="cx-m1"
+        class="line line-in"
+        d="M12 0 V56"
+        pathLength="1"
+        data-in
+        data-names={allNames}
+      />
       <g class="flow">
         <circle r="3.5" class="dot-plain" opacity="0">
           <animateMotion dur="1.6s" repeatCount="indefinite">
@@ -253,7 +277,7 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
       <span class="mt-1 text-xs text-white/70">Locks your files on your computer</span>
     </div>
     <svg class="mx-auto my-1 h-14 w-6 overflow-visible" viewBox="0 0 24 56" fill="none">
-      <path id="cx-m2" class="line line-out" d="M12 0 V56" pathLength="1" />
+      <path id="cx-m2" class="line line-out" d="M12 0 V56" pathLength="1" data-out />
       <g class="flow">
         <circle r="3.5" class="dot-locked" opacity="0">
           <animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite">
@@ -294,6 +318,8 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
     color: var(--color-text-muted);
   }
   .node {
+    position: relative;
+    z-index: 10;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -325,6 +351,7 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
   }
   .vault {
     position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     padding: 0.75rem;
@@ -334,7 +361,16 @@ const outgoing = ['r1', 'r2', 'r3', 'r4'];
     background: var(--color-ink);
     color: #fff;
     text-align: center;
-    box-shadow: 0 24px 48px -20px rgb(10 10 11 / 0.55);
+    box-shadow:
+      0 0 0 0 rgb(37 99 235 / 0),
+      0 24px 48px -20px rgb(10 10 11 / 0.55);
+    transition: box-shadow 0.35s;
+  }
+  /* A chip is being encrypted behind the card. */
+  .vault:global(.is-busy) {
+    box-shadow:
+      0 0 0 5px rgb(37 99 235 / 0.22),
+      0 24px 48px -20px rgb(37 99 235 / 0.55);
   }
 
   /* Thin lines */

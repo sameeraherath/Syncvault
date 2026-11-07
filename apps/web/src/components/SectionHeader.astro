@@ -1,0 +1,59 @@
+---
+/**
+ * Section header with a mono index ("01 — How it works") and a thin rule that draws in.
+ * The title is passed as a slot so it can contain line breaks or coloured spans.
+ */
+interface Props {
+  index?: string;
+  label: string;
+  align?: 'left' | 'center';
+  dark?: boolean;
+  /** md = slightly smaller title for split layouts. */
+  size?: 'lg' | 'md';
+  class?: string;
+}
+const {
+  index,
+  label,
+  align = 'left',
+  dark = false,
+  size = 'lg',
+  class: className = '',
+} = Astro.props;
+---
+
+<header class:list={['sh', align === 'center' && 'text-center', className]}>
+  <p
+    class:list={[
+      'reveal flex items-center gap-3 font-mono text-xs tracking-tight',
+      align === 'center' && 'justify-center',
+      dark ? 'text-primary-bright' : 'text-primary',
+    ]}
+  >
+    {index && <span>{index}</span>}
+    {index && <span class:list={['sh-rule h-px w-10', dark ? 'bg-white/25' : 'bg-primary/30']} />}
+    <span class:list={[dark ? 'text-white/70' : 'text-text-muted']}>{label}</span>
+  </p>
+  <h2
+    class:list={[
+      'display reveal mt-4 [--i:1]',
+      size === 'lg' ? 'text-4xl sm:text-5xl' : 'text-4xl lg:text-[2.4rem]',
+    ]}
+  >
+    <slot />
+  </h2>
+</header>
+
+<style>
+  .sh-rule {
+    transform-origin: left;
+  }
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    .sh-rule {
+      transition: transform 0.8s 0.2s var(--ease-out-soft);
+    }
+    :global([data-reveal]:not(.is-visible)) .sh-rule {
+      transform: scaleX(0);
+    }
+  }
+</style>

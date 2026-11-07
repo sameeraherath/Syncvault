@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
 
 const faqs = [
   {
@@ -28,8 +29,10 @@ const faqs = [
 <section id="questions" class="px-5 py-24" data-reveal>
   <div class="mx-auto grid max-w-5xl gap-10 md:grid-cols-[1fr_1.6fr]">
     <div>
-      <h2 class="display reveal text-4xl">Questions, answered simply.</h2>
-      <p class="reveal mt-4 text-text-muted [--i:1]">
+      <SectionHeader index="05" label="Questions">
+        Questions, answered simply.
+      </SectionHeader>
+      <p class="reveal mt-4 text-text-muted [--i:2]">
         Still curious? Ask the community — real people answer.
       </p>
     </div>
