@@ -1,0 +1,40 @@
+{
+  "name": "@syncvault/desktop",
+  "productName": "Syncvault",
+  "version": "0.1.0",
+  "private": true,
+  "description": "All your clouds, in sync. Only you hold the key.",
+  "homepage": "https://getsyncvault.com",
+  "license": "GPL-3.0-only",
+  "author": {
+    "name": "Syncvault contributors",
+    "email": "hello@getsyncvault.com"
+  },
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "dist:linux": "electron-builder --linux --config electron-builder.yml",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@syncvault/shared": "workspace:*",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@tailwindcss/vite": "4.3.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.2.1",
+    "electron-builder": "26.18.0",
+    "electron-vite": "6.0.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwindcss": "4.3.5",
+    "vite": "8.3.6"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "syncvault",
+  "version": "0.1.0",
+  "private": true,
+  "description": "All your clouds, in sync. Only you hold the key.",
+  "homepage": "https://getsyncvault.com",
+  "license": "GPL-3.0-only",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop dev",
+    "dev:no-sandbox": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop exec electron-vite dev --noSandbox",
+    "build": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop build",
+    "dist:linux": "pnpm build && pnpm --filter @syncvault/desktop dist:linux",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "fetch:rclone": "node scripts/fetch-rclone.mjs",
+    "rebuild:native": "electron-rebuild --force --only better-sqlite3 --module-dir packages/core",
+    "postinstall": "pnpm run rebuild:native"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "4.2.1",
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.6.6",
+    "electron": "45.2.3",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "electron",
+      "esbuild"
+    ],
+    "ignoredBuiltDependencies": [
+      "electron-winstaller"
+    ]
+  }
+}

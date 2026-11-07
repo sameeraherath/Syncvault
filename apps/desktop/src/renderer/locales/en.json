@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "Syncvault",
+    "tagline": "All your clouds, in sync. Only you hold the key."
+  },
+  "tray": {
+    "open": "Open Syncvault",
+    "quit": "Quit"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "welcome": "Welcome",
+    "dashboard": "Dashboard",
+    "syncFolders": "Sync folders",
+    "accounts": "Accounts",
+    "activity": "Activity",
+    "settings": "Settings"
+  },
+  "status": {
+    "title": "System status",
+    "appVersion": "App version",
+    "rcloneVersion": "rclone version",
+    "coreService": "Core service",
+    "database": "Database",
+    "refresh": "Refresh",
+    "core": {
+      "starting": "Starting…",
+      "connected": "Connected",
+      "restarting": "Restarting (attempt {{attempt}} of {{max}})",
+      "failed": "Failed",
+      "stopped": "Stopped"
+    },
+    "rclone": {
+      "starting": "Starting…",
+      "missing": "Not found — run pnpm fetch:rclone",
+      "error": "Error",
+      "stopped": "Stopped"
+    },
+    "db": {
+      "ready": "Ready (schema v{{version}})",
+      "error": "Error"
+    },
+    "unknown": "—"
+  },
+  "tray_notice": {
+    "title": "Tray icon not available",
+    "body": "Your desktop does not show tray icons. On GNOME, enable the “AppIndicator and KStatusNotifierItem Support” extension. Until then, closing the window minimises Syncvault."
+  },
+  "pages": {
+    "welcome": {
+      "title": "Welcome to Syncvault",
+      "body": "Set up your master password, add a cloud account and choose a folder to keep encrypted and in sync.",
+      "cta": "Get started"
+    },
+    "dashboard": {
+      "title": "Dashboard"
+    },
+    "syncFolders": {
+      "title": "Sync folders",
+      "empty": "No sync folders yet.",
+      "add": "New sync folder"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "empty": "No cloud accounts yet.",
+      "add": "Add account"
+    },
+    "activity": {
+      "title": "Activity",
+      "empty": "Nothing has happened yet."
+    },
+    "settings": {
+      "title": "Settings",
+      "theme": "Theme",
+      "themeSystem": "System",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "website": "Visit getsyncvault.com"
+    }
+  },
+  "common": {
+    "comingSoon": "Coming soon"
+  }
+}

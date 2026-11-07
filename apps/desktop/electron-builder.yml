@@ -1,0 +1,38 @@
+# Packaging config (not yet exercised in CI). See docs/ARCHITECTURE.md.
+appId: com.getsyncvault.app
+productName: Syncvault
+copyright: Copyright © Syncvault contributors
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - '!**/*.map'
+extraResources:
+  # Built core service (packages/core → dist/core.mjs), run with ELECTRON_RUN_AS_NODE=1.
+  - from: ../../packages/core/dist
+    to: core
+    filter: ['core.mjs']
+  # Pinned rclone for the target platform (downloaded by `pnpm fetch:rclone`).
+  - from: ../../resources/rclone/${platform}-${arch}
+    to: rclone
+    filter: ['rclone', 'rclone.exe']
+  - from: resources/tray.png
+    to: tray.png
+# TODO(packaging): ship better-sqlite3 (native, rebuilt for Electron) next to the core and
+# make it resolvable from resources/core (e.g. extraResources node_modules/better-sqlite3 →
+# core/node_modules/better-sqlite3). Verify with an AppImage smoke test.
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  icon: build/icon.png
+  maintainer: Syncvault contributors <hello@getsyncvault.com>
+  synopsis: Encrypted sync for all your clouds
+  description: All your clouds, in sync. Only you hold the key.
+deb:
+  depends:
+    - libsecret-1-0
+publish: null

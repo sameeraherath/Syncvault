@@ -1,0 +1,22 @@
+[package]
+name = "syncvault-vault"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Syncvault key handling: Argon2id key derivation, in-memory keys, OS keychain (skeleton)"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+napi = { version = "3.16.1", default-features = false, features = ["napi4"] }
+napi-derive = "3.7.0"
+# TODO(vault): argon2 (Argon2id), zeroize, secrecy, keyring — add after review.
+
+[build-dependencies]
+napi-build = "2.6.0"
+
+[profile.release]
+lto = true
+strip = "symbols"

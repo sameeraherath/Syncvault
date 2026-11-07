@@ -1,0 +1,9 @@
+node_modules
+out
+dist
+release
+pnpm-lock.yaml
+resources/rclone
+crates/**/target
+LICENSE
+apps/desktop/src/renderer/assets/fonts/OFL.txt
