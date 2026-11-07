@@ -1,0 +1,81 @@
+---
+import Icon from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
+
+const faqs = [
+  {
+    q: 'Is Syncvault really free?',
+    a: 'Yes. Syncvault is free and open source, with no paid tier, no ads and no tracking. It is funded by people who choose to support it.',
+  },
+  {
+    q: 'Do I need to change how I work?',
+    a: 'No. You keep saving files in the same folders and apps. Syncvault watches the folders you pick and syncs them in the background.',
+  },
+  {
+    q: 'What if I forget my password?',
+    a: 'During setup you get a recovery key — keep it somewhere safe. With it you can get back in. Without your password or recovery key, nobody (not even us) can open your files. That is what keeps them private.',
+  },
+  {
+    q: 'Can I still see my files on the Google Drive website?',
+    a: 'You will see that they are there, but only as scrambled names and contents. To open them, use Syncvault on your computer — that is the point: only you hold the key.',
+  },
+  {
+    q: 'Who makes Syncvault?',
+    a: 'A community of volunteers around the world. It started in Sri Lanka and is built in the open.',
+  },
+];
+---
+
+<section id="questions" class="px-5 py-24" data-reveal>
+  <div class="mx-auto grid max-w-5xl gap-10 md:grid-cols-[1fr_1.6fr]">
+    <div>
+      <SectionHeader index="05" label="Questions">
+        Questions, answered simply.
+      </SectionHeader>
+      <p class="reveal mt-4 text-text-muted [--i:2]">
+        Still curious? Ask the community — real people answer.
+      </p>
+    </div>
+    <div class="border-t border-border">
+      {faqs.map((f, i) => (
+        <details
+          class:list={['faq spot reveal rounded-lg border-b border-border px-3', `[--i:${i + 1}]`]}
+          name="faq"
+        >
+          <summary class="flex min-h-touch cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold">
+            {f.q}
+            <Icon name="chevron" class="chev size-4 shrink-0 text-text-muted" />
+          </summary>
+          <p class="pb-5 leading-relaxed text-text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .chev {
+    transition: transform 0.3s var(--ease-out-soft);
+  }
+  details[open] .chev {
+    transform: rotate(180deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .faq {
+      interpolate-size: allow-keywords;
+    }
+    .faq::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.35s var(--ease-out-soft),
+        content-visibility 0.35s allow-discrete;
+    }
+    .faq[open]::details-content {
+      block-size: auto;
+    }
+  }
+</style>

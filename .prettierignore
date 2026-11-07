@@ -6,4 +6,6 @@ pnpm-lock.yaml
 resources/rclone
 crates/**/target
 LICENSE
-apps/desktop/src/renderer/assets/fonts/OFL.txt
+packages/tokens/fonts
+.astro
+.vercel

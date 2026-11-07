@@ -1,0 +1,277 @@
+---
+import Icon from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
+
+const accounts = [
+  { name: 'Google Drive · Personal', used: '10.8 GB of 15 GB', w: 'w-[72%]' },
+  { name: 'OneDrive · Work', used: '240 GB of 1 TB', w: 'w-[24%]' },
+  { name: 'Dropbox · Family', used: '0.9 GB of 2 GB', w: 'w-[45%]' },
+];
+const folders = [
+  ['Documents', 'Google Drive'],
+  ['Work projects', 'OneDrive'],
+  ['Family photos', 'Dropbox'],
+];
+const people = [
+  { initial: 'P', label: 'Personal', cls: 'bg-primary text-white' },
+  { initial: 'W', label: 'Work', cls: 'bg-white text-ink' },
+  { initial: 'F', label: 'Family', cls: 'bg-primary-light text-primary-text' },
+];
+---
+
+<section class="bg-page px-5 py-28" data-reveal>
+  <div class="mx-auto max-w-5xl">
+    <div class="grid items-end gap-6 md:grid-cols-[1.4fr_1fr]">
+      <SectionHeader index="03" label="The app">
+        Every cloud. One calm screen.
+      </SectionHeader>
+      <p class="reveal max-w-sm leading-relaxed text-text-muted [--i:2]">
+        See all your accounts and folders at a glance. A lock means protected. A tick means safely
+        synced. That's it.
+      </p>
+    </div>
+
+    <!-- Illustration of the app (decorative; the text above describes it). -->
+    <div class="mt-14 [perspective:1400px]" data-tilt aria-hidden="true">
+      <div class="window reveal reveal-scale overflow-hidden rounded-2xl border border-border bg-card shadow-[0_40px_80px_-40px_rgb(17_24_39/0.35)] [--i:3]">
+        <div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
+          <span class="size-2.5 rounded-full bg-border"></span>
+          <span class="size-2.5 rounded-full bg-border"></span>
+          <span class="size-2.5 rounded-full bg-border"></span>
+          <span class="ml-3 font-mono text-[11px] text-text-muted">Syncvault — Overview</span>
+        </div>
+        <div class="flex">
+          <div class="hidden w-48 shrink-0 bg-ink p-4 text-sm text-white/70 sm:block">
+            <p class="mb-4 flex items-center gap-2 font-semibold text-white">
+              <span class="grid size-5 place-items-center rounded bg-primary">
+                <Icon name="lock" class="size-3" />
+              </span>
+              Syncvault
+            </p>
+            <p class="rounded-lg bg-ink-raised px-3 py-2 text-white">Overview</p>
+            <p class="px-3 py-2">Folders</p>
+            <p class="px-3 py-2">Clouds</p>
+            <p class="px-3 py-2">Activity</p>
+          </div>
+          <div class="min-w-0 flex-1 space-y-3 p-4 sm:p-5">
+            <div class="flex items-center gap-3 rounded-xl border border-border px-4 py-3">
+              <Icon name="check" class="tick size-5 text-primary-bright" />
+              <div>
+                <p class="text-sm font-semibold">Everything is safe and up to date</p>
+                <p class="text-xs text-text-muted">3 clouds · 4 folders · last synced just now</p>
+              </div>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-3">
+              {accounts.map((a, i) => (
+                <div class="rounded-xl border border-border p-4">
+                  <p class="truncate text-sm font-semibold">{a.name}</p>
+                  <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-primary-light">
+                    <div class:list={['bar h-full rounded-full bg-primary', a.w, `[--i:${i}]`]} />
+                  </div>
+                  <p class="mt-2 text-xs text-text-muted">{a.used}</p>
+                </div>
+              ))}
+            </div>
+            <div class="divide-y divide-border rounded-xl border border-border text-sm">
+              {folders.map(([name, cloud], i) => (
+                <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-2.5 sm:grid-cols-[1.2fr_1fr_auto]">
+                  <span class="font-semibold">{name}</span>
+                  <span class="hidden text-text-muted sm:inline">{cloud}</span>
+                  <span
+                    class:list={[
+                      'badge inline-flex items-center gap-1 rounded-md bg-primary-light px-2 py-0.5 text-xs font-medium text-primary-text',
+                      `[--i:${i}]`,
+                    ]}
+                  >
+                    <Icon name="lock" class="size-3" /> Locked
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bento features -->
+    <ul class="mt-6 grid gap-4 lg:grid-cols-3">
+      <li class="tile spot reveal [--i:4]">
+        <div class="tile-art justify-start gap-4" aria-hidden="true">
+          <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-raised px-4 py-3 shadow-sm">
+            <Icon name="file" class="size-5 text-text-muted" />
+            <div class="min-w-0">
+              <p class="font-mono text-[13px]">report.docx</p>
+              <p class="text-xs text-text-muted">Saved just now</p>
+            </div>
+            <svg class="sync-ring ml-4 size-7 -rotate-90" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="11" stroke="var(--color-border)" stroke-width="2.5" />
+              <circle
+                class="sync-arc"
+                cx="14"
+                cy="14"
+                r="11"
+                stroke="var(--color-primary)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                pathLength="1"
+              />
+            </svg>
+            <Icon name="check" class="sync-tick -ml-9 mr-1.5 size-4 text-primary-bright" />
+          </div>
+          <span class="font-mono text-[11px] text-white/50">→ synced to OneDrive, locked</span>
+        </div>
+        <h3 class="mt-5 font-semibold text-white">Works in the background</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-white/60">
+          Save a file as usual. Syncvault notices and syncs it for you.
+        </p>
+      </li>
+
+      <li class="tile spot reveal [--i:5]">
+        <div class="tile-art people" aria-hidden="true">
+          <div class="flex">
+            {people.map((p, i) => (
+              <span class:list={['person', p.cls, `[--k:${i}]`]}>{p.initial}</span>
+            ))}
+          </div>
+          <p class="mt-3 font-mono text-[11px] text-white/50">
+            {people.map((p) => p.label).join(' · ')}
+          </p>
+        </div>
+        <h3 class="mt-5 font-semibold text-white">Many accounts, no juggling</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-white/60">
+          Personal, work and family clouds side by side in one app.
+        </p>
+      </li>
+
+      <li class="tile spot reveal [--i:6]">
+        <div class="tile-art" aria-hidden="true">
+          <div class="toast flex items-center gap-3 rounded-xl border border-white/10 bg-raised px-3.5 py-2.5 text-text shadow-lg">
+            <Icon name="undo" class="size-4 text-primary-bright" />
+            <div>
+              <p class="text-[13px] font-medium">Restored from backup</p>
+              <p class="font-mono text-[11px] text-text-muted">tax-return-2026.xlsx</p>
+            </div>
+          </div>
+        </div>
+        <h3 class="mt-5 font-semibold text-white">Never lose a file</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-white/60">
+          Deleted or replaced files are kept safe first, just in case.
+        </p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .window {
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition:
+      transform 0.5s var(--ease-out-soft),
+      opacity 0.7s var(--ease-out-soft);
+  }
+  .tile {
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    background: var(--color-card);
+    padding: 1.5rem;
+  }
+  .tile-art {
+    height: 8.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    background:
+      radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px) 0 0 / 16px 16px,
+      rgb(255 255 255 / 0.03);
+  }
+  .person {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    margin-left: -0.6rem;
+    border: 3px solid var(--color-ink-raised);
+    border-radius: 999px;
+    font-weight: 600;
+    transition: transform 0.4s var(--ease-out-soft);
+  }
+  .person:first-child {
+    margin-left: 0;
+  }
+  .tile:hover .person {
+    transform: translateX(calc(var(--k) * 0.6rem));
+  }
+  .bar {
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Background sync: ring fills, tick appears, loops calmly. */
+    .sync-arc {
+      stroke-dasharray: 1;
+      animation: ring-fill 4.5s ease-in-out infinite;
+    }
+    .sync-tick {
+      animation: tick-in 4.5s ease-in-out infinite;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    .bar {
+      transition: transform 1.1s var(--ease-out-soft);
+      transition-delay: calc(0.7s + var(--i, 0) * 0.15s);
+    }
+    .badge,
+    .tick {
+      transition:
+        transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.3s;
+      transition-delay: calc(1.2s + var(--i, 0) * 0.18s);
+    }
+    .toast {
+      transition:
+        transform 0.6s 0.9s cubic-bezier(0.34, 1.3, 0.64, 1),
+        opacity 0.4s 0.9s;
+    }
+    section:not(:global(.is-visible)) .bar {
+      transform: scaleX(0);
+    }
+    section:not(:global(.is-visible)) .badge,
+    section:not(:global(.is-visible)) .tick {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+    section:not(:global(.is-visible)) .toast {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes ring-fill {
+    0% {
+      stroke-dashoffset: 1;
+    }
+    55%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes tick-in {
+    0%,
+    55% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    65%,
+    92% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+</style>

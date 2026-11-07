@@ -1,0 +1,14 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2 font-semibold tracking-tight', className]}>
+  <span class="grid size-7 place-items-center rounded-full bg-white text-ink">
+    <Icon name="lock" class="size-3.5" />
+  </span>
+  Syncvault
+</span>

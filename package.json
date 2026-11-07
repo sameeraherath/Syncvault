@@ -12,7 +12,9 @@
   "scripts": {
     "dev": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop dev",
     "dev:no-sandbox": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop exec electron-vite dev --noSandbox",
+    "dev:web": "pnpm --filter @syncvault/web dev",
     "build": "pnpm --filter @syncvault/core build && pnpm --filter @syncvault/desktop build",
+    "build:web": "pnpm --filter @syncvault/web build",
     "dist:linux": "pnpm build && pnpm --filter @syncvault/desktop dist:linux",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -21,7 +23,7 @@
     "test": "pnpm -r test",
     "fetch:rclone": "node scripts/fetch-rclone.mjs",
     "rebuild:native": "electron-rebuild --force --only better-sqlite3 --module-dir packages/core",
-    "postinstall": "pnpm run rebuild:native"
+    "postinstall": "node scripts/postinstall.mjs"
   },
   "devDependencies": {
     "@electron/rebuild": "4.2.1",
@@ -33,6 +35,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.14.0",
     "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vitest": "5.1.0"

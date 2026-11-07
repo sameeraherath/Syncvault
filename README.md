@@ -44,6 +44,8 @@ pnpm fetch:rclone          # downloads + SHA256-verifies the pinned rclone for y
 pnpm dev                   # opens the app
 ```
 
+The website (getsyncvault.com) lives in `apps/web`: `pnpm dev:web`, `pnpm build:web`.
+
 Other commands: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm dist:linux`.
 The Rust crate in `crates/vault` is optional for now (`cargo check --manifest-path crates/vault/Cargo.toml`).
 
@@ -70,4 +72,4 @@ _Placeholder — sponsorship options coming soon._
 
 ## Licence
 
-[GPL-3.0](LICENSE). IBM Plex fonts are under the SIL Open Font License 1.1.
+[GPL-3.0](LICENSE). Inter and IBM Plex Mono fonts are under the SIL Open Font License 1.1.

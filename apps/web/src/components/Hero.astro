@@ -1,0 +1,52 @@
+---
+import Icon from './Icon.astro';
+import ConnectDiagram from './ConnectDiagram.astro';
+import { SITE } from '../site';
+---
+
+<!-- Pulled up under the transparent sticky nav (-mt-16) so the glow starts at the very top. -->
+<section id="top" class="relative isolate -mt-16 overflow-hidden px-5 pb-24 pt-28 sm:pt-32">
+  <div
+    class="hero-glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px]"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="dot-grid pointer-events-none absolute inset-x-0 top-0 -z-10 h-[760px]"
+    aria-hidden="true"
+  ></div>
+
+  <div class="mx-auto max-w-5xl text-center">
+    <p class="intro mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs text-text-muted backdrop-blur [--i:0]">
+      <span class="size-1.5 rounded-full bg-primary"></span>
+      Free &amp; open source · Built by a community
+    </p>
+    <h1 class="display mt-6 text-[2.5rem] sm:text-[3.5rem] lg:text-[4rem]">
+      <span class="intro block [--i:1]">Manage all your cloud files in one place.</span>
+      <span class="intro block text-primary-bright [--i:2]">Only you hold the key.</span>
+    </h1>
+    <p class="intro mx-auto mt-6 max-w-xl text-lg leading-relaxed text-text-muted [--i:3]">
+      Google Drive, OneDrive and Dropbox files together in one app — synced, organised and private.
+    </p>
+    <div class="intro mt-8 flex flex-wrap items-center justify-center gap-3 [--i:4]">
+      <a href={SITE.links.download} class="btn-primary">
+        <Icon name="download" class="size-4" /> Download for free
+      </a>
+      <a href="#how-it-works" class="btn-ghost">
+        See how it works
+      </a>
+    </div>
+    <p class="intro mt-4 font-mono text-[11px] text-text-muted [--i:5]">
+      For Linux today · Windows and Mac coming soon · No&nbsp;sign&#8209;up
+    </p>
+  </div>
+
+  <div class="intro mx-auto mt-12 max-w-5xl [--i:6]">
+    <ConnectDiagram />
+  </div>
+</section>
+
+<style>
+  .hero-glow {
+    background: radial-gradient(70% 75% at 50% 0%, rgb(37 99 235 / 0.28), transparent 70%);
+  }
+</style>

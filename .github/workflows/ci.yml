@@ -32,6 +32,9 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test # unit tests: no rclone binary, no Rust, no network
+      - name: Build website
+        if: matrix.os == 'ubuntu-latest'
+        run: pnpm build:web
 
   vault-crate:
     name: cargo check (crates/vault)

@@ -23,6 +23,7 @@ Website: https://getsyncvault.com
 | Download rclone        | `pnpm fetch:rclone` (current platform; `--all` for every one)                             |
 | Dev (window + core)    | `pnpm dev`                                                                                |
 | Dev without OS sandbox | `pnpm dev:no-sandbox` — dev-only last resort for Ubuntu AppArmor issue (see CONTRIBUTING) |
+| Website dev / build    | `pnpm dev:web`, `pnpm build:web` (Astro, `apps/web`, deployed on Vercel)                  |
 | Build                  | `pnpm build`                                                                              |
 | Package (Linux)        | `pnpm dist:linux` (AppImage + .deb)                                                       |
 | Test                   | `pnpm test`                                                                               |
@@ -51,6 +52,9 @@ Renderer (React, sandboxed)
                                                   └─► rclone rcd on 127.0.0.1 ──► cloud providers
 ```
 
+- `apps/web`: getsyncvault.com landing page (Astro, static, Vercel). No analytics or third-party requests;
+  CSS/SVG animation only, respecting `prefers-reduced-motion`. See `apps/web/README.md`.
+- `packages/tokens`: shared Tailwind `@theme` design tokens + font licences (desktop + web).
 - `packages/shared`: types, zod schemas, RPC method names (`rpcMethods`), IPC channel names. Source-consumed (no build step).
 - `packages/core`: bundled with esbuild to `packages/core/dist/core.mjs`; spawned by main with
   `process.execPath` + `ELECTRON_RUN_AS_NODE=1`.
@@ -118,15 +122,16 @@ Details in `docs/DATA-SAFETY.md`; defaults live in `DATA_SAFETY_DEFAULTS` (`pack
 
 ## UI / design system
 
-Tailwind v4 tokens are defined in `apps/desktop/src/renderer/styles.css` (`@theme`).
+Tailwind v4 tokens live in `packages/tokens/theme.css` (`@theme`), shared by the desktop app and the website.
 
 - Primary blue `#2563EB` (hover `#1D4ED8`, text-on-light `#1E40AF`, light `#EFF4FF`, bright-on-black `#60A5FA`).
 - Black `#0A0A0B` (raised `#1F1F23`) for sidebar and dark panels. Text `#111827`, gray text `#4B5563`,
   border `#E3E6EB`, page background `#F6F7F9`, white cards.
 - Warning bg `#FEF3E2` / text `#92400E`. Error bg `#FEE2E2` / text `#B91C1C`.
 - Blue is the **only** action colour. Orange only for warnings like "Not encrypted" — **never red** for "not encrypted".
-- Fonts: IBM Plex Sans (UI), IBM Plex Mono (paths), bundled via `@fontsource` (no Google Fonts at runtime; OFL in
-  `apps/desktop/src/renderer/assets/fonts/OFL.txt`).
+- Fonts: **Inter** (UI, via `@fontsource-variable/inter`) + **IBM Plex Mono** (paths, ciphertext, code), self-hosted
+  (no Google Fonts at runtime). Licences (OFL 1.1) in `packages/tokens/fonts/`. Sinhala/Tamil: add Noto Sans
+  Sinhala / Noto Sans Tamil as fallbacks when those translations land.
 - Touch targets ≥ 44 px, WCAG AA contrast, real `<button>`/`<label>`, fully keyboard accessible.
 - Theme: System / Light / Dark (light is the default look).
 

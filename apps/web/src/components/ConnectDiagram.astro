@@ -1,0 +1,475 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+
+/*
+ * "How Syncvault connects everything".
+ * Desktop: a fixed-ratio stage (viewBox 1000×360). Cards are placed in % of the stage and one SVG
+ * draws thin 1px curves between them, so lines always meet the cards at any width.
+ * File chips (src/scripts/flow.ts) carry readable names into Syncvault and leave as blue
+ * ciphertext. Without JS, SMIL dots show the same flow; with reduced motion it is static.
+ * Mobile: the same story stacked vertically.
+ */
+interface Node {
+  id: string;
+  icon: IconName;
+  title: string;
+  note: string;
+  /** Tailwind class placing the card's vertical centre on the stage (y / 360). */
+  top: string;
+}
+
+const files: Node[] = [
+  { id: 'l1', icon: 'file', title: 'Documents', note: 'On your laptop', top: 'top-[36.11%]' },
+  { id: 'l2', icon: 'image', title: 'Family photos', note: 'On your laptop', top: 'top-[57.22%]' },
+  {
+    id: 'l3',
+    icon: 'briefcase',
+    title: 'Work projects',
+    note: 'On your laptop',
+    top: 'top-[78.33%]',
+  },
+];
+
+const stores: Node[] = [
+  {
+    id: 'r1',
+    icon: 'cloud',
+    title: 'Google Drive',
+    note: 'Sees only scrambled data',
+    top: 'top-[25.56%]',
+  },
+  {
+    id: 'r2',
+    icon: 'cloud',
+    title: 'OneDrive',
+    note: 'Sees only scrambled data',
+    top: 'top-[46.67%]',
+  },
+  {
+    id: 'r3',
+    icon: 'cloud',
+    title: 'Dropbox',
+    note: 'Sees only scrambled data',
+    top: 'top-[67.78%]',
+  },
+  {
+    id: 'r4',
+    icon: 'drive',
+    title: 'Portable drive',
+    note: 'Locked, even if lost',
+    top: 'top-[88.89%]',
+  },
+];
+
+// Curves: card edge → vault edge (x 270 → 400) and vault edge → card edge (x 600 → 730).
+const paths: Record<string, string> = {
+  l1: 'M270 130 C335 130 335 186 400 186',
+  l2: 'M270 206 C335 206 335 206 400 206',
+  l3: 'M270 282 C335 282 335 226 400 226',
+  r1: 'M600 176 C665 176 665 92 730 92',
+  r2: 'M600 196 C665 196 665 168 730 168',
+  r3: 'M600 216 C665 216 665 244 730 244',
+  r4: 'M600 236 C665 236 665 320 730 320',
+};
+
+const outgoing = ['r1', 'r2', 'r3', 'r4'];
+
+// Example file names carried by the chips, per source card.
+const names: Record<string, string> = {
+  l1: 'passport.pdf,contract.pdf,taxes.xlsx',
+  l2: 'beach.jpg,birthday.mp4,family/',
+  l3: 'roadmap.pdf,budget.xlsx,logo.svg',
+};
+const allNames = Object.values(names).join(',');
+---
+
+<div class="connect card spot relative overflow-hidden bg-card/70 p-6 sm:p-10" data-reveal>
+  <h2 class="mb-8 text-center text-[15px] font-semibold text-text">
+    How Syncvault connects everything
+  </h2>
+  <p class="sr-only">
+    Your documents, photos and projects stay on your laptop. Syncvault locks them on your computer
+    first, then Google Drive, OneDrive, Dropbox or a portable drive only ever store scrambled data.
+  </p>
+
+  <!-- Desktop stage -->
+  <div
+    class="stage relative mx-auto hidden aspect-[1000/360] max-w-4xl lg:block"
+    aria-hidden="true"
+    data-flow="1100"
+  >
+    <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 1000 360" fill="none">
+      {Object.entries(paths).map(([id, d]) => (
+        <path
+          id={`cx-${id}`}
+          class:list={['line', `line-${id}`, id.startsWith('l') ? 'line-in' : 'line-out']}
+          d={d}
+          pathLength="1"
+          data-in={id.startsWith('l') ? '' : undefined}
+          data-out={id.startsWith('r') ? '' : undefined}
+          data-names={names[id]}
+        />
+      ))}
+      {Object.entries(paths).map(([id, d]) => {
+        const [start, end] = [d.slice(1).split(' ').slice(0, 2), d.split(' ').slice(-2)];
+        return (
+          <g class:list={['joint', id.startsWith('l') ? 'line-in' : 'line-out']}>
+            <circle cx={start[0]} cy={start[1]} r="3" />
+            <circle cx={end[0]} cy={end[1]} r="3" />
+          </g>
+        );
+      })}
+      <g class="flow">
+        {['l1', 'l2', 'l3'].map((id, i) => (
+          <circle r="3.5" class="dot-plain" opacity="0">
+            <animateMotion
+              dur="2.4s"
+              begin={`${i * 0.8}s`}
+              repeatCount="indefinite"
+              calcMode="spline"
+              keyTimes="0;1"
+              keySplines="0.4 0 0.6 1"
+            >
+              <mpath href={`#cx-${id}`} />
+            </animateMotion>
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.15;0.8;1"
+              dur="2.4s"
+              begin={`${i * 0.8}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ))}
+        {outgoing.map((id, i) => (
+          <circle r="3.5" class="dot-locked" opacity="0">
+            <animateMotion
+              dur="2.4s"
+              begin={`${1.2 + i * 0.6}s`}
+              repeatCount="indefinite"
+              calcMode="spline"
+              keyTimes="0;1"
+              keySplines="0.4 0 0.6 1"
+            >
+              <mpath href={`#cx-${id}`} />
+            </animateMotion>
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.15;0.8;1"
+              dur="2.4s"
+              begin={`${1.2 + i * 0.6}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ))}
+      </g>
+    </svg>
+
+    <p class="label absolute left-0 top-[23.33%] -translate-y-1/2">Your files</p>
+    <p class="label absolute left-[73%] top-[12.22%] -translate-y-1/2">Where they're stored</p>
+
+    {files.map((n, i) => (
+      <div class:list={['absolute left-0 z-10 w-[27%] -translate-y-1/2', n.top]}>
+        <div class:list={['node spot reveal', `[--i:${i + 1}]`]} data-node={n.id}>
+          <Icon name={n.icon} class="size-4 shrink-0 text-text-muted" />
+          <span>
+            <span class="node-title">{n.title}</span>
+            <span class="node-note">{n.note}</span>
+          </span>
+        </div>
+      </div>
+    ))}
+
+    <div class="absolute left-[40%] top-[57.22%] z-10 h-[38.89%] w-[20%] -translate-y-1/2">
+      <div class="vault reveal reveal-scale h-full [--i:3]">
+        <svg
+          class="size-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="5" y="11" width="14" height="10" rx="2" />
+          <path class="vault-shackle" d="M8 11V7a4 4 0 0 1 8 0v4" />
+        </svg>
+        <span class="mt-2 text-[15px] font-semibold">Syncvault</span>
+        <span class="mt-1 text-xs leading-snug text-white/70">
+          Locks your files
+          <br />
+          on your computer
+        </span>
+      </div>
+    </div>
+
+    <p class="mono-note absolute left-[36%] top-[86%] w-[28%] text-center">
+      // scrambled before upload
+    </p>
+
+    {stores.map((n, i) => (
+      <div class:list={['absolute left-[73%] z-10 w-[27%] -translate-y-1/2', n.top]}>
+        <div class:list={['node spot reveal', `[--i:${i + 4}]`]} data-node={n.id}>
+          <Icon name={n.icon} class="size-4 shrink-0 text-primary-bright" />
+          <span>
+            <span class="node-title">{n.title}</span>
+            <span class="node-note">{n.note}</span>
+          </span>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Mobile / tablet: vertical flow -->
+  <div class="relative mx-auto max-w-md lg:hidden" aria-hidden="true" data-flow="1600">
+    <p class="label mb-2">Your files</p>
+    <div class="grid gap-2">
+      {files.map((n, i) => (
+        <div class:list={['node spot reveal', `[--i:${i}]`]}>
+          <Icon name={n.icon} class="size-4 shrink-0 text-text-muted" />
+          <span>
+            <span class="node-title">{n.title}</span>
+            <span class="node-note">{n.note}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+    <svg class="mx-auto my-1 h-14 w-6 overflow-visible" viewBox="0 0 24 56" fill="none">
+      <path
+        id="cx-m1"
+        class="line line-in"
+        d="M12 0 V56"
+        pathLength="1"
+        data-in
+        data-names={allNames}
+      />
+      <g class="flow">
+        <circle r="3.5" class="dot-plain" opacity="0">
+          <animateMotion dur="1.6s" repeatCount="indefinite">
+            <mpath href="#cx-m1" />
+          </animateMotion>
+          <animate
+            attributeName="opacity"
+            values="0;1;1;0"
+            keyTimes="0;0.15;0.8;1"
+            dur="1.6s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </g>
+    </svg>
+    <div class="vault reveal reveal-scale mx-auto w-56 py-6 [--i:3]">
+      <svg
+        class="size-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="5" y="11" width="14" height="10" rx="2" />
+        <path class="vault-shackle" d="M8 11V7a4 4 0 0 1 8 0v4" />
+      </svg>
+      <span class="mt-2 text-[15px] font-semibold">Syncvault</span>
+      <span class="mt-1 text-xs text-white/70">Locks your files on your computer</span>
+    </div>
+    <svg class="mx-auto my-1 h-14 w-6 overflow-visible" viewBox="0 0 24 56" fill="none">
+      <path id="cx-m2" class="line line-out" d="M12 0 V56" pathLength="1" data-out />
+      <g class="flow">
+        <circle r="3.5" class="dot-locked" opacity="0">
+          <animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite">
+            <mpath href="#cx-m2" />
+          </animateMotion>
+          <animate
+            attributeName="opacity"
+            values="0;1;1;0"
+            keyTimes="0;0.15;0.8;1"
+            dur="1.6s"
+            begin="0.8s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </g>
+    </svg>
+    <p class="label mb-2">Where they're stored</p>
+    <div class="grid gap-2 sm:grid-cols-2">
+      {stores.map((n, i) => (
+        <div class:list={['node spot reveal', `[--i:${i + 4}]`]}>
+          <Icon name={n.icon} class="size-4 shrink-0 text-primary-bright" />
+          <span>
+            <span class="node-title">{n.title}</span>
+            <span class="node-note">{n.note}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .node {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.875rem;
+    background: var(--color-raised);
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s,
+      opacity 0.7s var(--ease-out-soft),
+      transform 0.7s var(--ease-out-soft);
+    transition-delay: 0s, 0s, calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms);
+  }
+  .node:hover {
+    border-color: rgb(96 165 250 / 0.5);
+    box-shadow: 0 6px 20px -10px rgb(37 99 235 / 0.35);
+  }
+  .node-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .node-note {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+  .vault {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.25rem;
+    border: 1px solid rgb(96 165 250 / 0.35);
+    background: linear-gradient(160deg, #18264a, #0b1120);
+    color: #fff;
+    text-align: center;
+    box-shadow:
+      0 0 0 0 rgb(37 99 235 / 0),
+      0 24px 48px -20px rgb(10 10 11 / 0.55);
+    transition: box-shadow 0.35s;
+  }
+  /* A chip is being encrypted behind the card. */
+  .vault:global(.is-busy) {
+    box-shadow:
+      0 0 0 5px rgb(37 99 235 / 0.22),
+      0 24px 48px -20px rgb(37 99 235 / 0.55);
+  }
+
+  /* Thin lines */
+  .line {
+    stroke: rgb(255 255 255 / 0.22);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke 0.25s;
+  }
+  .line-out {
+    stroke: rgb(96 165 250 / 0.55);
+  }
+  .joint circle {
+    fill: var(--color-card);
+    stroke: rgb(255 255 255 / 0.3);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .dot-plain {
+    fill: #9ca3af;
+  }
+  .dot-locked {
+    fill: var(--color-primary);
+  }
+
+  /* Hover a card → highlight its line */
+  .stage:has([data-node='l1']:hover) .line-l1,
+  .stage:has([data-node='l2']:hover) .line-l2,
+  .stage:has([data-node='l3']:hover) .line-l3,
+  .stage:has([data-node='r1']:hover) .line-r1,
+  .stage:has([data-node='r2']:hover) .line-r2,
+  .stage:has([data-node='r3']:hover) .line-r3,
+  .stage:has([data-node='r4']:hover) .line-r4 {
+    stroke: var(--color-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow {
+      transition: opacity 0.6s 1.6s;
+    }
+    .vault-shackle {
+      transition: transform 0.45s 1.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .vault::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 0 0 rgb(37 99 235 / 0.45);
+    }
+    .connect.is-visible .vault::after {
+      animation: ring 2.6s 1.5s ease-out infinite;
+    }
+
+    @media (scripting: enabled) {
+      .line,
+      .joint {
+        transition:
+          stroke-dashoffset 0.9s var(--ease-out-soft),
+          opacity 0.4s,
+          stroke 0.25s;
+      }
+      .line-in {
+        transition-delay: 0.35s;
+      }
+      .line-out {
+        transition-delay: 1.05s;
+      }
+      .connect:not(.is-visible) .line {
+        stroke-dashoffset: 1;
+      }
+      .connect:not(.is-visible) .joint {
+        opacity: 0;
+      }
+      .connect:not(.is-visible) .flow {
+        opacity: 0;
+      }
+      .connect:not(.is-visible) .vault-shackle {
+        transform: translateY(-3px);
+      }
+    }
+  }
+
+  @keyframes ring {
+    0% {
+      box-shadow: 0 0 0 0 rgb(37 99 235 / 0.4);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 14px rgb(37 99 235 / 0);
+    }
+  }
+</style>
