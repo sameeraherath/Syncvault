@@ -2,7 +2,7 @@
 export const SITE = {
   name: 'Syncvault',
   url: 'https://getsyncvault.com',
-  title: 'Syncvault — All your clouds in one place. Locked with your key.',
+  title: 'Syncvault — Manage all your cloud files in one place. Only you hold the key.',
   description:
     'Free, open-source app that keeps your files in sync with Google Drive, OneDrive and Dropbox — and locks them on your computer first, so nobody else can look inside.',
   links: {
