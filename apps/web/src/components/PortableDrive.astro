@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="px-5 py-24" data-reveal>
+  <div class="mx-auto grid max-w-5xl items-center gap-10 overflow-hidden rounded-3xl bg-[#e3ecfd] p-8 sm:p-12 md:grid-cols-2">
+    <div>
+      <span class="reveal inline-block rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold">
+        Coming soon
+      </span>
+      <h2 class="display reveal mt-4 text-3xl sm:text-4xl [--i:1]">
+        Plug in your hard drive. It's locked too.
+      </h2>
+      <p class="reveal mt-4 leading-relaxed text-text-muted [--i:2]">
+        Back up or move files to a portable drive with the same protection. Lose the drive? Nobody
+        can open it.
+      </p>
+    </div>
+    <div
+      class="reveal reveal-right rounded-2xl bg-white p-5 shadow-[0_24px_48px_-24px_rgb(17_24_39/0.35)] [--i:3]"
+      aria-hidden="true"
+    >
+      <div class="flex items-center gap-3">
+        <span class="grid size-10 place-items-center rounded-xl bg-ink text-white">
+          <Icon name="drive" class="size-5" />
+        </span>
+        <div>
+          <p class="text-sm font-semibold">Portable drive connected</p>
+          <p class="text-xs text-text-muted">Back up "Photos" here, locked?</p>
+        </div>
+      </div>
+      <div class="mt-4 grid grid-cols-2 gap-2">
+        <span class="pulse btn bg-primary text-white">Back up now</span>
+        <span class="btn border border-border">Not now</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-visible) .pulse {
+      animation: pulse 1.6s 1.3s ease-out 2;
+    }
+  }
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgb(37 99 235 / 0.45);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgb(37 99 235 / 0);
+    }
+  }
+</style>

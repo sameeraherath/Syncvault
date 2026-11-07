@@ -1,0 +1,67 @@
+---
+const steps = [
+  {
+    title: 'Create your vault',
+    body: "Pick one strong password. It's the only key to your files — we never see it.",
+  },
+  {
+    title: 'Connect your clouds',
+    body: 'Sign in to the accounts you already use. Add as many as you like — personal, work, family.',
+  },
+  {
+    title: 'Pick folders. Done.',
+    body: 'Choose what to protect. Keep working in your usual apps — Syncvault quietly does the rest.',
+  },
+];
+---
+
+<section id="how-it-works" class="bg-page px-5 py-24" data-reveal>
+  <div class="mx-auto max-w-5xl">
+    <p class="eyebrow reveal text-center">How it works</p>
+    <h2 class="display reveal mt-3 text-center text-4xl sm:text-5xl [--i:1]">
+      Set up in three minutes.
+      <br />
+      Then forget about it.
+    </h2>
+    <ol class="relative mt-14 grid gap-5 md:grid-cols-3">
+      <span
+        class="steps-line absolute left-[16%] right-[16%] top-[3.25rem] hidden h-px md:block"
+        aria-hidden="true"
+      ></span>
+      {steps.map((s, i) => (
+        <li class:list={['card reveal relative p-7', `[--i:${i + 2}]`]}>
+          <span class="relative grid size-9 place-items-center rounded-full bg-primary-light text-sm font-semibold text-primary-text">
+            {i + 1}
+          </span>
+          <h3 class="mt-6 font-semibold">{s.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps-line {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-border) 10%,
+      var(--color-border) 90%,
+      transparent
+    );
+    transform-origin: left;
+    z-index: 0;
+  }
+  ol > li {
+    z-index: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    .steps-line {
+      transition: transform 1.2s 0.5s var(--ease-out-soft);
+    }
+    section:not(:global(.is-visible)) .steps-line {
+      transform: scaleX(0);
+    }
+  }
+</style>

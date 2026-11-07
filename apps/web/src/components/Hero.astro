@@ -1,0 +1,49 @@
+---
+import Icon from './Icon.astro';
+import ConnectDiagram from './ConnectDiagram.astro';
+import { SITE } from '../site';
+---
+
+<section id="top" class="relative overflow-hidden px-5 pb-24 pt-16 sm:pt-20">
+  <div
+    class="hero-glow pointer-events-none absolute inset-x-0 -top-40 -z-10 h-[520px]"
+    aria-hidden="true"
+  ></div>
+  <div class="mx-auto max-w-5xl text-center">
+    <p class="intro mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1 text-xs text-text-muted [--i:0]">
+      <span class="size-1.5 rounded-full bg-primary"></span>
+      Free · Private · Made by people, not a corporation
+    </p>
+    <h1 class="display mt-6 text-[2.6rem] sm:text-6xl lg:text-[4.5rem]">
+      <span class="intro block [--i:1]">All your clouds in one place.</span>
+      <span class="intro block [--i:2]">
+        <span class="shine text-primary">Locked with your key.</span>
+      </span>
+    </h1>
+    <p class="intro mx-auto mt-6 max-w-xl text-lg leading-relaxed text-text-muted [--i:3]">
+      Syncvault keeps your files in sync with Google Drive, OneDrive and Dropbox — and locks them on
+      your computer first, so nobody else can ever look inside.
+    </p>
+    <div class="intro mt-8 flex flex-wrap items-center justify-center gap-3 [--i:4]">
+      <a href={SITE.links.download} class="btn-primary">
+        <Icon name="download" class="size-4" /> Download for free
+      </a>
+      <a href="#how-it-works" class="btn-ghost">
+        See how it works
+      </a>
+    </div>
+    <p class="intro mt-4 text-xs text-text-muted [--i:5]">
+      For Linux today · Windows and Mac coming soon · No&nbsp;sign&#8209;up
+    </p>
+  </div>
+
+  <div class="intro mx-auto mt-16 max-w-5xl [--i:6]">
+    <ConnectDiagram />
+  </div>
+</section>
+
+<style>
+  .hero-glow {
+    background: radial-gradient(60% 60% at 50% 30%, rgb(37 99 235 / 0.1), transparent 70%);
+  }
+</style>

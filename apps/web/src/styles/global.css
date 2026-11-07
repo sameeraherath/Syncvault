@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@syncvault/tokens/theme.css';
+
+@theme {
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-text antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  :focus-visible {
+    @apply rounded-md outline-2 outline-offset-2 outline-primary;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@utility display {
+  @apply font-bold leading-[1.02] tracking-[-0.045em];
+}
+@utility eyebrow {
+  @apply text-sm font-semibold text-primary;
+}
+@utility btn {
+  @apply inline-flex min-h-touch items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition duration-200;
+}
+@utility btn-primary {
+  @apply btn bg-primary text-white shadow-[0_8px_24px_-8px_rgb(37_99_235/0.6)] hover:bg-primary-hover;
+}
+@utility btn-ghost {
+  @apply btn border border-border bg-white text-text hover:border-text/30;
+}
+@utility card {
+  @apply rounded-2xl border border-border bg-white;
+}
+@utility sr-only-focusable {
+  &:not(:focus) {
+    @apply sr-only;
+  }
+}
+
+/* ───────── Motion ─────────
+ * Hidden start states only apply when JS can reveal them (`scripting: enabled`)
+ * and the user has not asked for reduced motion. Without JS everything is visible.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Hero: plays on load, pure CSS. */
+  .intro {
+    animation: fade-up 0.8s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+  }
+  .shine {
+    background: linear-gradient(
+      100deg,
+      #2563eb 0%,
+      #2563eb 40%,
+      #60a5fa 50%,
+      #2563eb 60%,
+      #2563eb 100%
+    );
+    background-size: 250% 100%;
+    background-clip: text;
+    color: transparent;
+    animation: shine 2.4s 0.6s var(--ease-out-soft) both;
+  }
+
+  @media (scripting: enabled) {
+    .reveal {
+      transition:
+        opacity 0.7s var(--ease-out-soft),
+        transform 0.7s var(--ease-out-soft);
+      transition-delay: calc(var(--i, 0) * 90ms);
+    }
+    /* A [data-reveal] container gets .is-visible; .reveal children (or itself) animate in. */
+    [data-reveal]:not(.is-visible) .reveal,
+    .reveal[data-reveal]:not(.is-visible) {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    [data-reveal]:not(.is-visible) .reveal-scale,
+    .reveal-scale[data-reveal]:not(.is-visible) {
+      transform: translateY(18px) scale(0.97);
+    }
+    [data-reveal]:not(.is-visible) .reveal-right,
+    .reveal-right[data-reveal]:not(.is-visible) {
+      transform: translateX(32px);
+    }
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}

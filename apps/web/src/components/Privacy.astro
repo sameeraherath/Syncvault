@@ -1,0 +1,63 @@
+---
+import Icon from './Icon.astro';
+
+const rows = [
+  ['passport-scan.pdf', 'k3v9q0x7m2a1...'],
+  ['Family photos/', 'p8d1z1r4t9w/'],
+  ['house-contract.docx', 'w2n6hy0c5e8r...'],
+  ['medical-report.pdf', 'f7j3ub8sq1lz...'],
+  ['tax-return-2026.xlsx', 'm0x4ta9kv2pe...'],
+];
+const checks = ['No ads', 'No tracking', 'No account with us', 'Code anyone can check'];
+---
+
+<section id="privacy" class="px-5 py-24" data-reveal>
+  <div class="mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-[1.1fr_1fr]">
+    <div>
+      <p class="eyebrow reveal">Your privacy</p>
+      <h2 class="display reveal mt-3 text-4xl lg:text-[2.6rem] [--i:1]">
+        Your cloud keeps your files. <br class="hidden lg:block" />
+        It just can't read them.
+      </h2>
+      <p class="reveal mt-5 leading-relaxed text-text-muted [--i:2]">
+        Before anything leaves your computer, Syncvault scrambles it — even the file names. Google,
+        Microsoft, Dropbox and the people who make Syncvault only ever see nonsense.
+      </p>
+      <ul class="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-medium">
+        {checks.map((c, i) => (
+          <li class:list={['reveal flex items-center gap-2', `[--i:${i + 3}]`]}>
+            <Icon name="check" class="size-4 text-primary" /> {c}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="reveal reveal-scale overflow-hidden rounded-2xl bg-ink text-white shadow-[0_30px_60px_-25px_rgb(10_10_11/0.6)] [--i:2]">
+      <table class="w-full text-left font-mono text-xs sm:text-[13px]">
+        <caption class="sr-only">File names on your computer versus what the cloud stores</caption>
+        <thead>
+          <tr class="border-b border-white/10 font-sans text-[11px] uppercase tracking-[0.08em] text-white/55">
+            <th scope="col" class="px-4 py-3.5 font-semibold sm:px-5">
+              What you see
+            </th>
+            <th scope="col" class="px-4 py-3.5 font-semibold sm:px-5">
+              What the cloud sees
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([plain, cipher], i) => (
+            <tr
+              class:list={['reveal border-b border-white/[0.06] last:border-0', `[--i:${i + 3}]`]}
+            >
+              <td class="whitespace-nowrap px-4 py-3.5 text-white sm:px-5">{plain}</td>
+              <td class="whitespace-nowrap px-4 py-3.5 text-white/55 sm:px-5" data-cipher={cipher}>
+                {cipher}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

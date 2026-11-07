@@ -14,6 +14,8 @@ export default tseslint.config(
       '**/release/**',
       'crates/**',
       'resources/**',
+      '**/.astro/**',
+      '**/*.astro', // type-checked by `astro check`
     ],
   },
   js.configs.recommended,
@@ -31,6 +33,10 @@ export default tseslint.config(
     files: ['scripts/**/*.mjs', '**/*.config.{js,mjs,ts}', 'packages/core/build.mjs'],
     languageOptions: { globals: globals.node },
     rules: { 'no-console': 'off' },
+  },
+  {
+    files: ['apps/web/src/scripts/**/*.ts'],
+    languageOptions: { globals: globals.browser },
   },
   {
     files: ['apps/desktop/src/renderer/**/*.{ts,tsx}'],

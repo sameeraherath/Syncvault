@@ -1,0 +1,118 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import { SITE } from '../site';
+
+const values: { icon: IconName; title: string; body: string }[] = [
+  {
+    icon: 'heart',
+    title: 'Free, forever',
+    body: 'Locking your files will never cost money. Privacy is not a luxury.',
+  },
+  {
+    icon: 'ban',
+    title: 'Nothing to sell',
+    body: "No ads and no tracking. We can't see your files, so we can't sell them.",
+  },
+  {
+    icon: 'eye',
+    title: 'Open for everyone',
+    body: 'Anyone can check how Syncvault works. Nothing is hidden.',
+  },
+  {
+    icon: 'vote',
+    title: 'You have a say',
+    body: 'New features are chosen together with the people who use them.',
+  },
+];
+const helps: { icon: IconName; title: string; body: string; href: string }[] = [
+  {
+    icon: 'share',
+    title: 'Tell a friend',
+    body: 'Share Syncvault with someone who cares',
+    href: SITE.links.community,
+  },
+  {
+    icon: 'languages',
+    title: 'Translate',
+    body: 'Bring it to your language',
+    href: SITE.links.translate,
+  },
+  {
+    icon: 'flask',
+    title: 'Try new versions',
+    body: 'Test early and share feedback',
+    href: SITE.links.tryBeta,
+  },
+  {
+    icon: 'bug',
+    title: 'Report a problem',
+    body: 'Help us fix things fast',
+    href: SITE.links.reportProblem,
+  },
+  { icon: 'heart', title: 'Support us', body: 'Chip in to keep it free', href: SITE.links.sponsor },
+  {
+    icon: 'code',
+    title: 'Help with code',
+    body: 'For developers who want to join',
+    href: SITE.links.source,
+  },
+];
+---
+
+<section id="community" class="bg-ink px-5 py-24 text-white" data-reveal>
+  <div class="mx-auto max-w-5xl">
+    <p class="reveal text-sm font-semibold text-primary-bright">Community</p>
+    <h2 class="display reveal mt-3 max-w-xl text-4xl sm:text-5xl [--i:1]">
+      Made by people like you. <span class="text-primary-bright">For everyone.</span>
+    </h2>
+    <p class="reveal mt-5 max-w-lg leading-relaxed text-white/70 [--i:2]">
+      Syncvault isn't owned by a big company. It's built in the open by volunteers and funded by the
+      people who use it — so it will always work for you.
+    </p>
+
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {values.map((v, i) => (
+        <li class:list={['reveal rounded-2xl border border-white/10 p-6', `[--i:${i + 3}]`]}>
+          <Icon name={v.icon} class="size-5 text-primary-bright" />
+          <h3 class="mt-4 font-semibold">{v.title}</h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-white/65">{v.body}</p>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="reveal mt-16 text-xl font-semibold tracking-tight [--i:4]">
+      Want to help? You don't need to be technical.
+    </h3>
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {helps.map((h, i) => (
+        <li class:list={['reveal', `[--i:${i + 5}]`]}>
+          <a
+            href={h.href}
+            class="help flex min-h-touch items-center gap-4 rounded-2xl bg-ink-raised px-5 py-4"
+          >
+            <Icon name={h.icon} class="size-5 shrink-0 text-primary-bright" />
+            <span>
+              <span class="block text-sm font-semibold">{h.title}</span>
+              <span class="block text-xs text-white/60">{h.body}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="reveal mt-8 text-sm text-white/55 [--i:8]">
+      We're just getting started — the first helpers' names go right here.
+    </p>
+  </div>
+</section>
+
+<style>
+  .help {
+    transition:
+      transform 0.25s var(--ease-out-soft),
+      background-color 0.25s;
+  }
+  .help:hover {
+    background: #2a2a30;
+    transform: translateY(-2px);
+  }
+</style>

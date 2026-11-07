@@ -1,0 +1,26 @@
+{
+  "name": "@syncvault/web",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "description": "getsyncvault.com \u2014 the Syncvault landing page (Astro, static, deployed on Vercel).",
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@syncvault/tokens": "workspace:*",
+    "@tailwindcss/vite": "4.3.5",
+    "astro": "7.4.1",
+    "tailwindcss": "4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12"
+  }
+}

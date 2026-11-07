@@ -1,0 +1,30 @@
+/*
+ * Syncvault design tokens (see CLAUDE.md → UI / design system).
+ * Shared by apps/desktop and apps/web. Import AFTER `@import 'tailwindcss';`.
+ */
+@theme {
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-text: #1e40af;
+  --color-primary-light: #eff4ff;
+  --color-primary-bright: #60a5fa;
+
+  --color-ink: #0a0a0b;
+  --color-ink-raised: #1f1f23;
+
+  --color-text: #111827;
+  --color-text-muted: #4b5563;
+  --color-border: #e3e6eb;
+  --color-page: #f6f7f9;
+  --color-card: #ffffff;
+
+  --color-warning-bg: #fef3e2;
+  --color-warning-text: #92400e;
+  --color-error-bg: #fee2e2;
+  --color-error-text: #b91c1c;
+
+  --spacing-touch: 2.75rem; /* 44px minimum touch target */
+}
