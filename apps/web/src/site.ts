@@ -4,7 +4,7 @@ export const SITE = {
   url: 'https://getsyncvault.com',
   title: 'Syncvault — Manage all your cloud files in one place. Only you hold the key.',
   description:
-    'Free, open-source app that keeps your files in sync with Google Drive, OneDrive and Dropbox — and locks them on your computer first, so nobody else can look inside.',
+    'Free, open-source desktop app. Google Drive, OneDrive and Dropbox files together in one app — synced, organised and private.',
   links: {
     // TODO(release): point at the Linux release page once the first build is published.
     download: '#download',
