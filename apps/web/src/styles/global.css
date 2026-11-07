@@ -107,24 +107,6 @@
   transition: border-color 0.3s;
 }
 
-/* Decrypt headline: real text stays (transparent) for layout + screen readers; noise overlays it. */
-[data-decrypt] {
-  position: relative;
-  display: inline-block;
-}
-[data-decrypt].is-decrypting {
-  color: transparent;
-}
-.decrypt-overlay {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--dc, var(--color-text));
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 /* Connect-diagram file chips (created by src/scripts/flow.ts). */
 .chip-layer {
   position: absolute;

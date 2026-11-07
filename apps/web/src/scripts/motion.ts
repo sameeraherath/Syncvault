@@ -1,34 +1,12 @@
-import { runScramble } from './scramble';
-import { prepareDecrypt, runDecrypt } from './decrypt';
 import { startFlow } from './flow';
 import { initPointerEffects } from './lens';
 
 /**
- * Page motion: scroll reveals, sticky-nav state, decrypt headlines, the connect-diagram flow and
- * pointer effects. Everything is optional — without JS (or with reduced motion) content is static,
- * readable and visible.
+ * Page motion: scroll reveals, the auto-hiding nav, the connect-diagram flow and pointer effects.
+ * Everything is optional — without JS (or with reduced motion) content is static and visible.
  */
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 document.documentElement.classList.add('js');
-
-// Headlines that decrypt on load (hero) are scrambled immediately, before they fade in.
-if (!reduceMotion) {
-  document.querySelectorAll<HTMLElement>('[data-decrypt="load"]').forEach((el) => {
-    prepareDecrypt(el);
-    runDecrypt(el, 1300, 450);
-  });
-}
-
-const onVisible = (el: Element): void => {
-  el.classList.add('is-visible');
-  if (reduceMotion) return;
-  el.querySelectorAll<HTMLElement>('[data-cipher]').forEach((c, i) =>
-    setTimeout(() => void runScramble(c), 150 + i * 140),
-  );
-  el.querySelectorAll<HTMLElement>('[data-decrypt="reveal"]').forEach((d) =>
-    runDecrypt(d, 1100, 250),
-  );
-};
 
 const targets = document.querySelectorAll('[data-reveal]');
 if ('IntersectionObserver' in window) {
@@ -36,7 +14,7 @@ if ('IntersectionObserver' in window) {
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
-        onVisible(entry.target);
+        entry.target.classList.add('is-visible');
         io.unobserve(entry.target);
       }
     },
@@ -44,7 +22,7 @@ if ('IntersectionObserver' in window) {
   );
   targets.forEach((t) => io.observe(t));
 } else {
-  targets.forEach(onVisible);
+  targets.forEach((t) => t.classList.add('is-visible'));
 }
 
 // Connect diagram: file chips (desktop stage and mobile column). Only the visible layout runs.
@@ -68,9 +46,30 @@ if (!reduceMotion) {
 
 initPointerEffects();
 
-const nav = document.querySelector('[data-nav]');
-const updateNav = (): void => {
-  nav?.classList.toggle('is-scrolled', window.scrollY > 8);
-};
-updateNav();
-window.addEventListener('scroll', updateNav, { passive: true });
+// Nav: frosted once scrolled; hides while scrolling down, comes back when scrolling up.
+const nav = document.querySelector<HTMLElement>('[data-nav]');
+if (nav) {
+  let lastY = window.scrollY;
+  let hidden = false;
+  let queued = false;
+  const update = (): void => {
+    queued = false;
+    const y = window.scrollY;
+    const dy = y - lastY;
+    nav.classList.toggle('is-scrolled', y > 8);
+    if (y < 80) hidden = false;
+    else if (dy > 6) hidden = true;
+    else if (dy < -6) hidden = false;
+    if (Math.abs(dy) > 6 || y < 80) lastY = y;
+    nav.classList.toggle('is-hidden', hidden);
+  };
+  update();
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!queued) requestAnimationFrame(update);
+      queued = true;
+    },
+    { passive: true },
+  );
+}

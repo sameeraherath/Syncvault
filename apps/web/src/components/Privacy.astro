@@ -66,9 +66,7 @@ const checks = ['No ads', 'No tracking', 'No account with us', 'Code anyone can 
             {rows.map((r) => (
               <li class="row">
                 <Icon name={r.icon} class="size-4 shrink-0 text-white/35" />
-                <span class="flex-1 truncate text-white/60" data-cipher={r.cipher}>
-                  {r.cipher}
-                </span>
+                <span class="flex-1 truncate text-white/60">{r.cipher}</span>
                 <span class="text-white/35">{r.size}</span>
               </li>
             ))}

@@ -20,6 +20,7 @@ Cards and rows with the `.spot` class get the blue pointer spotlight on hover.
 
 CSS + SVG only — no animation library.
 
+- The nav hides while scrolling down and returns when scrolling up (`motion.ts`).
 - `src/scripts/motion.ts` adds `.is-visible` to `[data-reveal]` containers when they scroll into view;
   `.reveal` children animate in (staggered with the `[--i:n]` class).
 - Hidden start states only apply under `@media (prefers-reduced-motion: no-preference)` **and**
@@ -27,8 +28,7 @@ CSS + SVG only — no animation library.
 - `ConnectDiagram.astro` — thin 1px SVG curves on a fixed-ratio stage (viewBox 1000×360); cards are
   positioned in %, so lines always meet them. Lines draw in, the lock closes, then grey dots (readable
   files) flow into Syncvault and blue dots (locked data) flow out (SMIL `animateMotion`).
-- Signature pieces: `scripts/decrypt.ts` (headlines resolve from ciphertext), `scripts/flow.ts`
-  (file chips that scramble as they pass through Syncvault), `scripts/lens.ts` (privacy "key lens",
+- Signature pieces: `scripts/flow.ts` (file chips that scramble as they pass through Syncvault), `scripts/lens.ts` (privacy "key lens",
   card spotlight, app-window tilt)
   and `components/SectionHeader.astro` (mono `01 — Label` headers).
 - No inline `style=""` attributes — the CSP has no `'unsafe-inline'`; dynamic values are set through

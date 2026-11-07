@@ -33,9 +33,14 @@ const links = [
 <style>
   .nav {
     transition:
+      transform 0.35s var(--ease-out-soft),
       background-color 0.3s,
       border-color 0.3s,
       backdrop-filter 0.3s;
+  }
+  /* Slides away while scrolling down; keyboard focus always brings it back. */
+  .nav:global(.is-hidden):not(:focus-within) {
+    transform: translateY(-100%);
   }
   .nav:global(.is-scrolled) {
     background: rgb(10 10 11 / 0.78);
