@@ -29,7 +29,7 @@ CSS + SVG only — no animation library.
   files) flow into Syncvault and blue dots (locked data) flow out (SMIL `animateMotion`).
 - Signature pieces: `scripts/decrypt.ts` (headlines resolve from ciphertext), `scripts/flow.ts`
   (file chips that scramble as they pass through Syncvault), `scripts/lens.ts` (privacy "key lens",
-  card spotlight, app-window tilt), `components/CipherField.astro` (decorative ciphertext background)
+  card spotlight, app-window tilt)
   and `components/SectionHeader.astro` (mono `01 — Label` headers).
 - No inline `style=""` attributes — the CSP has no `'unsafe-inline'`; dynamic values are set through
   CSSOM (`style.setProperty`), which the CSP allows.

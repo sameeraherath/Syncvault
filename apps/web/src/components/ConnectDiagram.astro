@@ -212,7 +212,7 @@ const allNames = Object.values(names).join(',');
     {stores.map((n, i) => (
       <div class:list={['absolute left-[73%] z-10 w-[27%] -translate-y-1/2', n.top]}>
         <div class:list={['node spot reveal', `[--i:${i + 4}]`]} data-node={n.id}>
-          <Icon name={n.icon} class="size-4 shrink-0 text-primary" />
+          <Icon name={n.icon} class="size-4 shrink-0 text-primary-bright" />
           <span>
             <span class="node-title">{n.title}</span>
             <span class="node-note">{n.note}</span>
@@ -298,7 +298,7 @@ const allNames = Object.values(names).join(',');
     <div class="grid gap-2 sm:grid-cols-2">
       {stores.map((n, i) => (
         <div class:list={['node spot reveal', `[--i:${i + 4}]`]}>
-          <Icon name={n.icon} class="size-4 shrink-0 text-primary" />
+          <Icon name={n.icon} class="size-4 shrink-0 text-primary-bright" />
           <span>
             <span class="node-title">{n.title}</span>
             <span class="node-note">{n.note}</span>

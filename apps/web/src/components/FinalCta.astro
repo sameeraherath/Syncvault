@@ -1,6 +1,5 @@
 ---
 import Icon from './Icon.astro';
-import CipherField from './CipherField.astro';
 import { SITE } from '../site';
 ---
 
@@ -9,7 +8,6 @@ import { SITE } from '../site';
   class="relative isolate overflow-hidden bg-page px-5 py-28 text-center"
   data-reveal
 >
-  <CipherField class="-z-10" seed={42} rows={12} />
   <span class="lock reveal reveal-scale mx-auto grid size-14 place-items-center rounded-full bg-primary text-white shadow-[0_0_40px_rgb(37_99_235/0.5)]">
     <svg
       class="size-6"
