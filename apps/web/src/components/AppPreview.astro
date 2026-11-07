@@ -33,7 +33,7 @@ const people = [
 
     <!-- Illustration of the app (decorative; the text above describes it). -->
     <div class="mt-14 [perspective:1400px]" data-tilt aria-hidden="true">
-      <div class="window reveal reveal-scale overflow-hidden rounded-2xl border border-border bg-white shadow-[0_40px_80px_-40px_rgb(17_24_39/0.35)] [--i:3]">
+      <div class="window reveal reveal-scale overflow-hidden rounded-2xl border border-border bg-card shadow-[0_40px_80px_-40px_rgb(17_24_39/0.35)] [--i:3]">
         <div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
           <span class="size-2.5 rounded-full bg-border"></span>
           <span class="size-2.5 rounded-full bg-border"></span>
@@ -95,9 +95,9 @@ const people = [
 
     <!-- Bento features -->
     <ul class="mt-6 grid gap-4 lg:grid-cols-3">
-      <li class="tile spot spot-dark reveal [--i:4]">
+      <li class="tile spot reveal [--i:4]">
         <div class="tile-art justify-start gap-4" aria-hidden="true">
-          <div class="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3 shadow-sm">
+          <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-raised px-4 py-3 shadow-sm">
             <Icon name="file" class="size-5 text-text-muted" />
             <div class="min-w-0">
               <p class="font-mono text-[13px]">report.docx</p>
@@ -126,7 +126,7 @@ const people = [
         </p>
       </li>
 
-      <li class="tile spot spot-dark reveal [--i:5]">
+      <li class="tile spot reveal [--i:5]">
         <div class="tile-art people" aria-hidden="true">
           <div class="flex">
             {people.map((p, i) => (
@@ -143,9 +143,9 @@ const people = [
         </p>
       </li>
 
-      <li class="tile spot spot-dark reveal [--i:6]">
+      <li class="tile spot reveal [--i:6]">
         <div class="tile-art" aria-hidden="true">
-          <div class="toast flex items-center gap-3 rounded-xl bg-white px-3.5 py-2.5 text-text shadow-lg">
+          <div class="toast flex items-center gap-3 rounded-xl border border-white/10 bg-raised px-3.5 py-2.5 text-text shadow-lg">
             <Icon name="undo" class="size-4 text-primary" />
             <div>
               <p class="text-[13px] font-medium">Restored from backup</p>
@@ -170,9 +170,9 @@ const people = [
       opacity 0.7s var(--ease-out-soft);
   }
   .tile {
-    border: 1px solid rgb(255 255 255 / 0.06);
+    border: 1px solid var(--color-border);
     border-radius: 1.5rem;
-    background: var(--color-ink);
+    background: var(--color-card);
     padding: 1.5rem;
   }
   .tile-art {
@@ -185,7 +185,7 @@ const people = [
     border-radius: 1rem;
     background:
       radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px) 0 0 / 16px 16px,
-      var(--color-ink-raised);
+      rgb(255 255 255 / 0.03);
   }
   .person {
     display: grid;

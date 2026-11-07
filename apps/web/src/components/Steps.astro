@@ -29,7 +29,7 @@ const accounts = [
         (pos, i) => (
           <span
             class:list={[
-              'track-dot absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-primary bg-white',
+              'track-dot absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-primary bg-ink',
               pos,
               `[--i:${i}]`,
             ]}
@@ -41,9 +41,9 @@ const accounts = [
     <ol class="mt-8 grid gap-10 md:mt-6 md:grid-cols-3 md:gap-8">
       <!-- 1. Create your vault -->
       <li class="reveal [--i:2]">
-        <p class="font-mono text-xs text-primary">01</p>
+        <p class="font-mono text-xs text-primary-bright">01</p>
         <div class="ill spot" aria-hidden="true">
-          <div class="flex items-center gap-3 rounded-xl border border-border bg-white px-3 py-2.5 shadow-sm">
+          <div class="flex items-center gap-3 rounded-xl border border-border bg-raised px-3 py-2.5 shadow-sm">
             <Icon name="key" class="size-4 text-text-muted" />
             <span class="flex gap-1.5">
               {Array.from({ length: 10 }, (_, k) => (
@@ -58,7 +58,7 @@ const accounts = [
             ))}
           </div>
           <p class="mt-2 font-mono text-[11px] text-text-muted">
-            strength: <span class="strong font-medium text-primary">strong</span>
+            strength: <span class="strong font-medium text-primary-bright">strong</span>
           </p>
         </div>
         <h3 class="mt-6 text-lg font-semibold">Create your vault</h3>
@@ -69,13 +69,13 @@ const accounts = [
 
       <!-- 2. Connect your clouds -->
       <li class="reveal [--i:3]">
-        <p class="font-mono text-xs text-primary">02</p>
+        <p class="font-mono text-xs text-primary-bright">02</p>
         <div class="ill spot" aria-hidden="true">
           <ul class="grid gap-2">
             {accounts.map(([name, kind], k) => (
               <li
                 class:list={[
-                  'acct flex items-center gap-2.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] shadow-sm',
+                  'acct flex items-center gap-2.5 rounded-lg border border-border bg-raised px-3 py-1.5 text-[13px] shadow-sm',
                   `[--k:${k}]`,
                 ]}
               >
@@ -95,7 +95,7 @@ const accounts = [
 
       <!-- 3. Pick folders -->
       <li class="reveal [--i:4]">
-        <p class="font-mono text-xs text-primary">03</p>
+        <p class="font-mono text-xs text-primary-bright">03</p>
         <div class="ill spot flex flex-col items-center justify-center" aria-hidden="true">
           <div class="relative">
             <svg
@@ -108,10 +108,10 @@ const accounts = [
             >
               <path
                 d="M4 12a4 4 0 0 1 4-4h18l6 7h40a4 4 0 0 1 4 4v33a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"
-                fill="#fff"
+                fill="var(--color-raised)"
               />
             </svg>
-            <span class="lock-badge absolute -bottom-2 -right-3 grid size-8 place-items-center rounded-full bg-ink text-white shadow-md">
+            <span class="lock-badge absolute -bottom-2 -right-3 grid size-8 place-items-center rounded-full bg-primary text-white shadow-md">
               <svg
                 class="size-4"
                 viewBox="0 0 24 24"
@@ -148,8 +148,8 @@ const accounts = [
     border: 1px solid var(--color-border);
     border-radius: 1.25rem;
     background:
-      radial-gradient(rgb(17 24 39 / 0.06) 1px, transparent 1px) 0 0 / 16px 16px,
-      #fbfcfd;
+      radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px) 0 0 / 16px 16px,
+      rgb(255 255 255 / 0.02);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -224,7 +224,7 @@ const accounts = [
       transform: scaleX(0);
     }
     section:not(:global(.is-visible)) .track-dot {
-      background: #fff;
+      background: var(--color-ink);
       border-color: var(--color-border);
     }
     section:not(:global(.is-visible)) .pw-dot {

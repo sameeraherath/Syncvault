@@ -38,7 +38,10 @@ const faqs = [
     </div>
     <div class="border-t border-border">
       {faqs.map((f, i) => (
-        <details class:list={['faq reveal border-b border-border', `[--i:${i + 1}]`]} name="faq">
+        <details
+          class:list={['faq spot reveal rounded-lg border-b border-border px-3', `[--i:${i + 1}]`]}
+          name="faq"
+        >
           <summary class="flex min-h-touch cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold">
             {f.q}
             <Icon name="chevron" class="chev size-4 shrink-0 text-text-muted" />

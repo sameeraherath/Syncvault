@@ -83,7 +83,7 @@ const names: Record<string, string> = {
 const allNames = Object.values(names).join(',');
 ---
 
-<div class="connect card relative overflow-hidden bg-page/60 p-6 sm:p-10" data-reveal>
+<div class="connect card spot relative overflow-hidden bg-card/70 p-6 sm:p-10" data-reveal>
   <h2 class="mb-8 text-center text-[15px] font-semibold text-text">
     How Syncvault connects everything
   </h2>
@@ -172,7 +172,7 @@ const allNames = Object.values(names).join(',');
 
     {files.map((n, i) => (
       <div class:list={['absolute left-0 z-10 w-[27%] -translate-y-1/2', n.top]}>
-        <div class:list={['node reveal', `[--i:${i + 1}]`]} data-node={n.id}>
+        <div class:list={['node spot reveal', `[--i:${i + 1}]`]} data-node={n.id}>
           <Icon name={n.icon} class="size-4 shrink-0 text-text-muted" />
           <span>
             <span class="node-title">{n.title}</span>
@@ -211,7 +211,7 @@ const allNames = Object.values(names).join(',');
 
     {stores.map((n, i) => (
       <div class:list={['absolute left-[73%] z-10 w-[27%] -translate-y-1/2', n.top]}>
-        <div class:list={['node reveal', `[--i:${i + 4}]`]} data-node={n.id}>
+        <div class:list={['node spot reveal', `[--i:${i + 4}]`]} data-node={n.id}>
           <Icon name={n.icon} class="size-4 shrink-0 text-primary" />
           <span>
             <span class="node-title">{n.title}</span>
@@ -227,7 +227,7 @@ const allNames = Object.values(names).join(',');
     <p class="label mb-2">Your files</p>
     <div class="grid gap-2">
       {files.map((n, i) => (
-        <div class:list={['node reveal', `[--i:${i}]`]}>
+        <div class:list={['node spot reveal', `[--i:${i}]`]}>
           <Icon name={n.icon} class="size-4 shrink-0 text-text-muted" />
           <span>
             <span class="node-title">{n.title}</span>
@@ -297,7 +297,7 @@ const allNames = Object.values(names).join(',');
     <p class="label mb-2">Where they're stored</p>
     <div class="grid gap-2 sm:grid-cols-2">
       {stores.map((n, i) => (
-        <div class:list={['node reveal', `[--i:${i + 4}]`]}>
+        <div class:list={['node spot reveal', `[--i:${i + 4}]`]}>
           <Icon name={n.icon} class="size-4 shrink-0 text-primary" />
           <span>
             <span class="node-title">{n.title}</span>
@@ -326,7 +326,7 @@ const allNames = Object.values(names).join(',');
     padding: 0.7rem 1rem;
     border: 1px solid var(--color-border);
     border-radius: 0.875rem;
-    background: #fff;
+    background: var(--color-raised);
     transition:
       border-color 0.2s,
       box-shadow 0.2s,
@@ -335,7 +335,7 @@ const allNames = Object.values(names).join(',');
     transition-delay: 0s, 0s, calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms);
   }
   .node:hover {
-    border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+    border-color: rgb(96 165 250 / 0.5);
     box-shadow: 0 6px 20px -10px rgb(37 99 235 / 0.35);
   }
   .node-title {
@@ -358,7 +358,8 @@ const allNames = Object.values(names).join(',');
     align-items: center;
     justify-content: center;
     border-radius: 1.25rem;
-    background: var(--color-ink);
+    border: 1px solid rgb(96 165 250 / 0.35);
+    background: linear-gradient(160deg, #18264a, #0b1120);
     color: #fff;
     text-align: center;
     box-shadow:
@@ -375,7 +376,7 @@ const allNames = Object.values(names).join(',');
 
   /* Thin lines */
   .line {
-    stroke: #b9c0ca;
+    stroke: rgb(255 255 255 / 0.22);
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
     stroke-dasharray: 1;
@@ -383,11 +384,11 @@ const allNames = Object.values(names).join(',');
     transition: stroke 0.25s;
   }
   .line-out {
-    stroke: color-mix(in srgb, var(--color-primary) 45%, #c9ced6);
+    stroke: rgb(96 165 250 / 0.55);
   }
   .joint circle {
-    fill: #fff;
-    stroke: #c9ced6;
+    fill: var(--color-card);
+    stroke: rgb(255 255 255 / 0.3);
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
   }

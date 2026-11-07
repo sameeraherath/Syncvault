@@ -9,6 +9,13 @@ pnpm build:web        # → apps/web/dist
 pnpm --filter @syncvault/web preview
 ```
 
+## Theme
+
+The website is **dark-only**: `src/styles/global.css` overrides the shared tokens from
+`packages/tokens` (page, card, text, border, primary-light/text) for the site only — the desktop app
+keeps its own theme. Small blue text uses `primary-bright` (#60A5FA) for AA contrast on black.
+Cards and rows with the `.spot` class get the blue pointer spotlight on hover.
+
 ## Animation
 
 CSS + SVG only — no animation library.

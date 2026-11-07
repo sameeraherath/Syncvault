@@ -55,7 +55,11 @@ const helps: { icon: IconName; title: string; body: string; href: string }[] = [
 const commits = [40, 120, 200, 300, 380, 470, 560, 640, 740, 830, 920];
 ---
 
-<section id="community" class="relative overflow-hidden bg-ink px-5 py-28 text-white" data-reveal>
+<section
+  id="community"
+  class="relative overflow-hidden border-y border-border bg-ink px-5 py-28 text-white"
+  data-reveal
+>
   <div class="mx-auto max-w-5xl">
     <div class="grid items-end gap-6 md:grid-cols-[1.4fr_1fr]">
       <SectionHeader index="04" label="Community" dark>
@@ -90,7 +94,12 @@ const commits = [40, 120, 200, 300, 380, 470, 560, 640, 740, 830, 920];
 
     <ol class="mt-14 grid gap-x-12 md:grid-cols-2">
       {values.map((v, i) => (
-        <li class:list={['reveal flex gap-6 border-t border-white/10 py-7', `[--i:${i + 2}]`]}>
+        <li
+          class:list={[
+            'spot reveal flex gap-6 rounded-xl border-t border-white/10 px-3 py-7',
+            `[--i:${i + 2}]`,
+          ]}
+        >
           <span class="font-mono text-sm text-primary-bright">
             {String(i + 1).padStart(2, '0')}
           </span>
@@ -110,7 +119,7 @@ const commits = [40, 120, 200, 300, 380, 470, 560, 640, 740, 830, 920];
         <li class:list={['reveal', `[--i:${i + 5}]`]}>
           <a
             href={h.href}
-            class="help group flex min-h-touch items-center gap-4 border-b border-white/10 py-4"
+            class="help spot group flex min-h-touch items-center gap-4 rounded-lg border-b border-white/10 px-3 py-4"
           >
             <Icon name={h.icon} class="size-5 shrink-0 text-primary-bright" />
             <span class="flex-1">
@@ -133,7 +142,7 @@ const commits = [40, 120, 200, 300, 380, 470, 560, 640, 740, 830, 920];
     transition: padding 0.3s var(--ease-out-soft);
   }
   .help:hover {
-    padding-left: 0.5rem;
+    padding-left: 1.25rem;
   }
   .arrow {
     transition:
