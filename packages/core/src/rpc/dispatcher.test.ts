@@ -16,6 +16,8 @@ const handlers: RpcHandlers = {
     database: { state: 'ready' as const, schemaVersion: 1 },
   })),
   'history.list': vi.fn(() => ({ entries: [] })),
+  'accounts.list': vi.fn(() => ({ accounts: [] })),
+  'files.list': vi.fn(() => ({ state: 'encrypted' as const })),
   'core.shutdown': vi.fn(() => ({ ok: true as const })),
 };
 
