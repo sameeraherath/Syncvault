@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { CoreState, Result, RpcErrorObject, StatusGetResult } from '@syncvault/shared';
+import { useCoreState } from '../hooks/useCoreState';
 import { t } from '../i18n';
 import { Card, PrimaryButton } from './Page';
 
@@ -34,7 +35,7 @@ const dbLabel = (status: StatusGetResult | null): string => {
 };
 
 export const StatusCard = (): React.JSX.Element => {
-  const [core, setCore] = useState<CoreState>({ state: 'starting' });
+  const core = useCoreState();
   const [status, setStatus] = useState<StatusGetResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,12 +48,6 @@ export const StatusCard = (): React.JSX.Element => {
     }
   }, []);
   const refresh = useCallback(() => void window.syncvault.rpc('status.get').then(apply), [apply]);
-
-  useEffect(() => {
-    void window.syncvault.getCoreState().then(setCore);
-    const off = window.syncvault.onCoreState(setCore);
-    return off;
-  }, []);
 
   useEffect(() => {
     if (core.state !== 'connected') return;

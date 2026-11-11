@@ -1,8 +1,14 @@
 import path from 'node:path';
-import { CORE_READY_LINE, type DatabaseStatus, type StatusGetResult } from '@syncvault/shared';
+import {
+  CORE_READY_LINE,
+  rpcMethods,
+  type DatabaseStatus,
+  type StatusGetResult,
+} from '@syncvault/shared';
 import { readCoreConfig } from './env.js';
 import { createLogger, errorMessage } from './log.js';
 import { openDatabase, type Database } from './db/database.js';
+import { listHistory } from './db/history.js';
 import { RcloneProcess } from './rclone/process.js';
 import { startRpcServer, type RpcServer } from './rpc/server.js';
 
@@ -61,6 +67,13 @@ const main = async (): Promise<void> => {
         rclone: rclone.status,
         database,
       }),
+      'history.list': (params) => {
+        // Throwing here is fine: the dispatcher turns it into an InternalError response,
+        // and the status card already shows why the database is unavailable.
+        if (!db) throw new Error('database unavailable');
+        const limit = rpcMethods['history.list'].params.parse(params)?.limit;
+        return { entries: listHistory(db, limit) };
+      },
       'core.shutdown': () => {
         setImmediate(() => void shutdown(0));
         return { ok: true as const };
