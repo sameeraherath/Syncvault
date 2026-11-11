@@ -11,7 +11,7 @@
     "label": "Main navigation",
     "welcome": "Welcome",
     "dashboard": "Dashboard",
-    "syncFolders": "Sync folders",
+    "files": "Files",
     "accounts": "Accounts",
     "activity": "Activity",
     "settings": "Settings"
@@ -87,10 +87,41 @@
     "dashboard": {
       "title": "Dashboard"
     },
-    "syncFolders": {
-      "title": "Sync folders",
-      "empty": "No sync folders yet.",
-      "add": "New sync folder"
+    "files": {
+      "title": "Files",
+      "drivesLabel": "Your cloud accounts",
+      "empty": "No cloud accounts linked yet.",
+      "addAccount": "Add account",
+      "loading": "Loading…",
+      "loadError": "Couldn't load your accounts: {{message}}",
+      "providers": {
+        "drive": "Google Drive",
+        "onedrive": "OneDrive"
+      },
+      "breadcrumb": "Folder path",
+      "root": "Files",
+      "folder": "Folder",
+      "file": "File",
+      "emptyFolder": "This folder is empty.",
+      "truncated": "Showing the first {{count}} items. Very large folders are cut off for now.",
+      "encrypted": {
+        "title": "This folder is encrypted",
+        "body": "Its contents can be shown once your vault is unlocked."
+      },
+      "errors": {
+        "accountNotFound": "This account is no longer linked.",
+        "rcloneUnavailable": "The sync engine isn't running. Try again in a moment.",
+        "listFailed": "Couldn't open this folder.",
+        "generic": "Something went wrong: {{message}}"
+      },
+      "retry": "Try again",
+      "syncedEncrypted": "Synced · encrypted",
+      "syncedNotEncrypted": "Synced · not encrypted",
+      "syncThisFolder": "Sync this folder",
+      "demo": {
+        "toggle": "Show demo data",
+        "notice": "Demo data: these accounts and files are fake. Only visible in development builds."
+      }
     },
     "accounts": {
       "title": "Accounts",

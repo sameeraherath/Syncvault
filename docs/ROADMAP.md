@@ -14,7 +14,8 @@ Dates are intentionally absent — this is a volunteer-driven project.
 - Accounts: Google Drive + OneDrive, multiple accounts each
 - Sync folders: encrypted by default (rclone crypt), automatic two-way sync (bisync) with all data-safety checks
 - Tray, notifications, Activity history
-- Screens: Welcome, Dashboard, Sync folders, Add account, New sync folder, Activity, Settings
+- Screens: Welcome, Dashboard, Files (read-only browser of linked clouds), Add account, New sync folder, Activity, Settings
+- Later: rename / move / delete in Files (with backups + tests, see DATA-SAFETY.md)
 - Packaging: AppImage + .deb (+ .rpm), auto-update
 
 ## v1.0 — Windows
