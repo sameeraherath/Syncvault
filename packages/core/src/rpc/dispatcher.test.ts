@@ -15,6 +15,7 @@ const handlers: RpcHandlers = {
     rclone: { state: 'starting' as const },
     database: { state: 'ready' as const, schemaVersion: 1 },
   })),
+  'history.list': vi.fn(() => ({ entries: [] })),
   'core.shutdown': vi.fn(() => ({ ok: true as const })),
 };
 

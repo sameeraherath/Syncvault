@@ -50,6 +50,9 @@ Lifecycle:
   connection must be `auth.hello { token }` (constant-time compare); anything else closes the connection.
 - Core → rclone: `POST http://127.0.0.1:<port>/<group>/<method>` with JSON body and HTTP Basic auth.
 - Main → renderer events: `syncvault:core-state` (`starting | connected | restarting | failed | stopped`).
+- Renderer-allowed RPC methods: `status.get` (versions, rclone + DB state) and `history.list { limit? }`
+  (Activity page, newest first). `history.list` returns only the folder **name**, never the full local path, and
+  never the free-text `detail` column.
 
 ## Data flow (planned)
 

@@ -54,8 +54,27 @@ describe('method schemas', () => {
     expect(ok.success).toBe(true);
   });
 
+  it('validates history.list params', () => {
+    const params = rpcMethods['history.list'].params;
+    expect(params.safeParse(undefined).success).toBe(true);
+    expect(params.safeParse({}).success).toBe(true);
+    expect(params.safeParse({ limit: 10 }).success).toBe(true);
+    expect(params.safeParse({ limit: 0 }).success).toBe(false);
+    expect(params.safeParse({ limit: 201 }).success).toBe(false);
+    expect(params.safeParse({ limit: 1.5 }).success).toBe(false);
+    expect(params.safeParse({ limit: 10, evil: 1 }).success).toBe(false);
+  });
+
+  it('rejects unknown history events in results', () => {
+    const result = rpcMethods['history.list'].result;
+    const entry = { id: 1, event: 'sync.completed', folderName: 'Work', createdAt: 1 };
+    expect(result.safeParse({ entries: [entry] }).success).toBe(true);
+    expect(result.safeParse({ entries: [{ ...entry, event: 'rm -rf' }] }).success).toBe(false);
+  });
+
   it('only exposes allow-listed methods to the renderer', () => {
     expect(isRendererMethod('status.get')).toBe(true);
+    expect(isRendererMethod('history.list')).toBe(true);
     expect(isRendererMethod('auth.hello')).toBe(false);
     expect(isRendererMethod('core.shutdown')).toBe(false);
   });

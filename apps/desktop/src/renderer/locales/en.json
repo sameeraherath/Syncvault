@@ -99,7 +99,24 @@
     },
     "activity": {
       "title": "Activity",
-      "empty": "Nothing has happened yet."
+      "empty": "Nothing has happened yet.",
+      "loading": "Loading activity…",
+      "error": "Couldn't load activity: {{message}}",
+      "refresh": "Refresh",
+      "listLabel": "Recent activity, newest first",
+      "events": {
+        "sync": {
+          "completed": "Folder synced",
+          "failed": "Sync failed",
+          "paused": "Sync paused: needs your review"
+        },
+        "account": {
+          "added": "Cloud account added"
+        },
+        "folder": {
+          "added": "Sync folder added"
+        }
+      }
     },
     "settings": {
       "title": "Settings",
