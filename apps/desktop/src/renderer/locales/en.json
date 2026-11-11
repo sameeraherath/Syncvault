@@ -50,7 +50,39 @@
     "welcome": {
       "title": "Welcome to Syncvault",
       "body": "Set up your master password, add a cloud account and choose a folder to keep encrypted and in sync.",
-      "cta": "Get started"
+      "cta": "Get started",
+      "stepOf": "Step {{current}} of {{total}}",
+      "back": "Back",
+      "continue": "Continue",
+      "previewNotice": "Preview: this setup is not secure yet. Nothing is encrypted or saved.",
+      "password": {
+        "title": "Create your master password",
+        "body": "This password unlocks Syncvault and encrypts your files. Only you know it.",
+        "label": "Master password",
+        "confirmLabel": "Confirm master password",
+        "hint": "At least {{min}} characters. A few random words make a strong, memorable password.",
+        "show": "Show password",
+        "warning": "We can't reset this password. If you lose both it and your recovery key, your encrypted files can't be recovered.",
+        "errors": {
+          "tooShort": "Use at least {{min}} characters.",
+          "mismatch": "The passwords don't match.",
+          "createFailed": "Couldn't set up your vault: {{message}}"
+        }
+      },
+      "recoveryKey": {
+        "title": "Save your recovery key",
+        "body": "If you forget your master password, this key is the only way back in. Store it somewhere safe and offline, like a password manager or on paper.",
+        "label": "Recovery key",
+        "copy": "Copy",
+        "copied": "Copied",
+        "copyFailed": "Couldn't copy. Please select the key and copy it manually.",
+        "confirm": "I have saved my recovery key somewhere safe"
+      },
+      "done": {
+        "title": "You're set up",
+        "body": "Next, connect a cloud account like Google Drive or OneDrive.",
+        "addAccount": "Add a cloud account"
+      }
     },
     "dashboard": {
       "title": "Dashboard"
