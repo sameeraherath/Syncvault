@@ -15,16 +15,32 @@ export const Card = (props: { children: ReactNode; className?: string }): React.
   </section>
 );
 
-export const PrimaryButton = (props: {
+interface ButtonProps {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-}): React.JSX.Element => (
+  /** Use 'submit' inside a <form> so Enter submits it. */
+  type?: 'button' | 'submit';
+}
+
+export const PrimaryButton = (props: ButtonProps): React.JSX.Element => (
   <button
-    type="button"
+    type={props.type ?? 'button'}
     onClick={props.onClick}
     disabled={props.disabled}
-    className="min-h-touch rounded-md bg-primary px-4 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50"
+    className="min-h-touch rounded-md bg-primary px-4 text-sm font-medium text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+  >
+    {props.children}
+  </button>
+);
+
+/** Low-emphasis action (e.g. Back). Still blue: blue is the only action colour. */
+export const SecondaryButton = (props: ButtonProps): React.JSX.Element => (
+  <button
+    type={props.type ?? 'button'}
+    onClick={props.onClick}
+    disabled={props.disabled}
+    className="min-h-touch rounded-md px-4 text-sm font-medium text-primary-text hover:bg-primary-light disabled:cursor-not-allowed disabled:opacity-50 dark:text-primary-bright dark:hover:bg-ink"
   >
     {props.children}
   </button>

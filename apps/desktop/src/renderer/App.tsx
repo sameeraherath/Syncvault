@@ -9,7 +9,8 @@ import { SyncFoldersPage } from './pages/SyncFolders';
 import { WelcomePage } from './pages/Welcome';
 
 // TODO(ui): Add account and New sync folder flows; show Welcome on first run only.
-const pages: Record<PageId, () => React.JSX.Element> = {
+type PageProps = { onNavigate: (id: PageId) => void };
+const pages: Record<PageId, (props: PageProps) => React.JSX.Element> = {
   welcome: WelcomePage,
   dashboard: DashboardPage,
   syncFolders: SyncFoldersPage,
@@ -26,7 +27,7 @@ export const App = (): React.JSX.Element => {
       <Sidebar current={page} onNavigate={setPage} />
       <main className="flex-1 overflow-y-auto p-8" aria-live="polite">
         <TrayNotice />
-        <Page />
+        <Page onNavigate={setPage} />
       </main>
     </div>
   );
