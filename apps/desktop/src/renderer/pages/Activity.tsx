@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { HistoryEntry, HistoryEvent } from '@syncvault/shared';
+import type { HistoryEntry } from '@syncvault/shared';
+import { ActivityRow } from '../components/ActivityRow';
 import { Card, EmptyState, PageHeader, PrimaryButton } from '../components/Page';
 import { useCoreState } from '../hooks/useCoreState';
 import { t } from '../i18n';
@@ -8,39 +9,6 @@ type Load =
   | { state: 'loading' }
   | { state: 'error'; message: string }
   | { state: 'ready'; entries: HistoryEntry[] };
-
-// Failures in error colours, "paused, needs review" in warning orange; blue stays for actions only.
-const toneClass = (event: HistoryEvent): string => {
-  switch (event) {
-    case 'sync.failed':
-      return 'border-l-error-text';
-    case 'sync.paused':
-      return 'border-l-warning-text';
-    default:
-      return 'border-l-border dark:border-l-ink';
-  }
-};
-
-const timeFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-
-const EntryRow = (props: { entry: HistoryEntry }): React.JSX.Element => {
-  const { entry } = props;
-  const date = new Date(entry.createdAt);
-  return (
-    <li
-      className={`flex flex-wrap items-baseline gap-x-4 gap-y-1 border-l-4 py-3 pl-4 ${toneClass(entry.event)}`}
-    >
-      <time
-        dateTime={date.toISOString()}
-        className="w-44 shrink-0 text-sm text-text-muted dark:text-white/70"
-      >
-        {timeFormat.format(date)}
-      </time>
-      <span className="font-medium">{t(`pages.activity.events.${entry.event}`)}</span>
-      {entry.folderName !== null && <span className="font-mono text-sm">{entry.folderName}</span>}
-    </li>
-  );
-};
 
 export const ActivityPage = (): React.JSX.Element => {
   const core = useCoreState();
@@ -98,7 +66,7 @@ export const ActivityPage = (): React.JSX.Element => {
         <Card>
           <ol aria-label={t('pages.activity.listLabel')} className="flex flex-col gap-1">
             {load.entries.map((entry) => (
-              <EntryRow key={entry.id} entry={entry} />
+              <ActivityRow key={entry.id} entry={entry} />
             ))}
           </ol>
         </Card>
