@@ -50,9 +50,15 @@ Lifecycle:
   connection must be `auth.hello { token }` (constant-time compare); anything else closes the connection.
 - Core → rclone: `POST http://127.0.0.1:<port>/<group>/<method>` with JSON body and HTTP Basic auth.
 - Main → renderer events: `syncvault:core-state` (`starting | connected | restarting | failed | stopped`).
-- Renderer-allowed RPC methods: `status.get` (versions, rclone + DB state) and `history.list { limit? }`
-  (Activity page, newest first). `history.list` returns only the folder **name**, never the full local path, and
-  never the free-text `detail` column.
+- Renderer-allowed RPC methods: `status.get` (versions, rclone + DB state), `history.list { limit? }`
+  (Activity page, newest first), `accounts.list` and `files.list { accountId, path }` (Files page, read-only).
+  - `history.list` returns only the folder **name**, never the full local path, and never the free-text `detail` column.
+  - `accounts.list` never returns the internal rclone remote name.
+  - `files.list`: the renderer sends an **account id**, never an rclone remote; the core looks the remote up in
+    SQLite, so the renderer can't make rclone list the local disk. `path` is relative and `/`-separated
+    (`isSafeRemotePath`: no `..`, no leading `/`, no `\`). Paths inside an **encrypted** sync folder return
+    `{ state: 'encrypted' }` (ciphertext names) until the vault exists. Errors are reason codes, never raw rclone
+    messages (they can contain paths). Listings are capped at `FILES_MAX_ENTRIES`.
 
 ## Data flow (planned)
 

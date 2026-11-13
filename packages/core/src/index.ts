@@ -8,7 +8,9 @@ import {
 import { readCoreConfig } from './env.js';
 import { createLogger, errorMessage } from './log.js';
 import { openDatabase, type Database } from './db/database.js';
+import { listAccounts } from './db/accounts.js';
 import { listHistory } from './db/history.js';
+import { listFiles } from './files/list.js';
 import { RcloneProcess } from './rclone/process.js';
 import { startRpcServer, type RpcServer } from './rpc/server.js';
 
@@ -73,6 +75,17 @@ const main = async (): Promise<void> => {
         if (!db) throw new Error('database unavailable');
         const limit = rpcMethods['history.list'].params.parse(params)?.limit;
         return { entries: listHistory(db, limit) };
+      },
+      'accounts.list': () => {
+        if (!db) throw new Error('database unavailable');
+        return { accounts: listAccounts(db) };
+      },
+      'files.list': (params) => {
+        if (!db) throw new Error('database unavailable');
+        return listFiles(
+          { db, rclone: rclone.client },
+          rpcMethods['files.list'].params.parse(params),
+        );
       },
       'core.shutdown': () => {
         setImmediate(() => void shutdown(0));

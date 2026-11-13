@@ -138,8 +138,8 @@ Tailwind v4 tokens live in `packages/tokens/theme.css` (`@theme`), shared by the
 ## MVP scope
 
 In: Linux; Google Drive + OneDrive; master password + recovery key; multiple accounts; encrypted sync folders
-(encryption on by default); automatic two-way sync; tray; screens: Welcome, Dashboard, Sync folders,
-Add account, New sync folder, Activity, Settings.
+(encryption on by default); automatic two-way sync; tray; screens: Welcome, Dashboard, Files (browse
+linked clouds; find and create sync folders), Add account, New sync folder, Activity, Settings.
 Out: mobile, sharing, Teams, mount mode, Windows/macOS installers.
 
 ## Workflow for AI assistants

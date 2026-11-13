@@ -4,8 +4,8 @@ import { TrayNotice } from './components/TrayNotice';
 import { AccountsPage } from './pages/Accounts';
 import { ActivityPage } from './pages/Activity';
 import { DashboardPage } from './pages/Dashboard';
+import { FilesPage } from './pages/Files';
 import { SettingsPage } from './pages/Settings';
-import { SyncFoldersPage } from './pages/SyncFolders';
 import { WelcomePage } from './pages/Welcome';
 
 // TODO(ui): Add account and New sync folder flows; show Welcome on first run only.
@@ -13,7 +13,7 @@ type PageProps = { onNavigate: (id: PageId) => void };
 const pages: Record<PageId, (props: PageProps) => React.JSX.Element> = {
   welcome: WelcomePage,
   dashboard: DashboardPage,
-  syncFolders: SyncFoldersPage,
+  files: FilesPage,
   accounts: AccountsPage,
   activity: ActivityPage,
   settings: SettingsPage,

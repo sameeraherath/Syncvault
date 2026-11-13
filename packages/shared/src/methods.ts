@@ -62,6 +62,71 @@ export type HistoryEntry = z.infer<typeof historyEntrySchema>;
 export const HISTORY_DEFAULT_LIMIT = 50;
 export const HISTORY_MAX_LIMIT = 200;
 
+/** Cloud providers in the MVP, as rclone backend names. */
+export const providerSchema = z.enum(['drive', 'onedrive']);
+export type Provider = z.infer<typeof providerSchema>;
+
+/** A linked cloud account as the renderer sees it. The internal rclone remote name is never exposed. */
+export const accountSchema = z.object({
+  id: z.string().min(1).max(64),
+  provider: providerSchema,
+  displayName: z.string(),
+});
+export type Account = z.infer<typeof accountSchema>;
+
+export const REMOTE_PATH_MAX_LENGTH = 1024;
+export const FILES_MAX_ENTRIES = 2000;
+
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARS_RE = /[\u0000-\u001f\u007f]/;
+
+/**
+ * A path inside a cloud account: relative, `/`-separated on every OS, `''` = the account root.
+ * Rejects `..`/`.` segments, leading or trailing `/`, `\\`, empty segments and control characters,
+ * so a renderer can never point rclone outside the account.
+ */
+export const isSafeRemotePath = (p: string): boolean => {
+  if (p === '') return true;
+  if (p.length > REMOTE_PATH_MAX_LENGTH) return false;
+  if (p.includes('\\') || CONTROL_CHARS_RE.test(p)) return false;
+  return p.split('/').every((s) => s !== '' && s !== '.' && s !== '..');
+};
+
+export const remotePathSchema = z
+  .string()
+  .max(REMOTE_PATH_MAX_LENGTH)
+  .refine(isSafeRemotePath, { message: 'Invalid path' });
+
+export const fileEntrySchema = z.object({
+  name: z.string().min(1),
+  isDir: z.boolean(),
+  /** Bytes; null for folders or when the provider doesn't report it. */
+  size: z.number().int().nonnegative().nullable(),
+  /** Unix epoch milliseconds, or null if unknown. */
+  modTime: z.number().int().nullable(),
+  /** Set when this folder is a Syncvault sync folder. */
+  syncFolder: z.object({ encrypted: z.boolean() }).nullable(),
+});
+export type FileEntry = z.infer<typeof fileEntrySchema>;
+
+/**
+ * `encrypted`: the path is inside an encrypted sync folder, whose names are ciphertext until the vault
+ * is unlocked. Error reasons are codes, never raw rclone messages (they can contain paths).
+ */
+export const fileListResultSchema = z.discriminatedUnion('state', [
+  z.object({
+    state: z.literal('ok'),
+    entries: z.array(fileEntrySchema).max(FILES_MAX_ENTRIES),
+    truncated: z.boolean(),
+  }),
+  z.object({ state: z.literal('encrypted') }),
+  z.object({
+    state: z.literal('error'),
+    reason: z.enum(['accountNotFound', 'rcloneUnavailable', 'listFailed']),
+  }),
+]);
+export type FileListResult = z.infer<typeof fileListResultSchema>;
+
 export const rpcMethods = {
   /** Must be the first message on every connection. */
   'auth.hello': {
@@ -73,6 +138,16 @@ export const rpcMethods = {
     result: statusGetResultSchema,
   },
   /** Newest activity entries first. */
+  /** Linked cloud accounts, by display name. */
+  'accounts.list': {
+    params: emptyParams,
+    result: z.object({ accounts: z.array(accountSchema) }),
+  },
+  /** Read-only folder listing inside a linked account. The core resolves the rclone remote. */
+  'files.list': {
+    params: z.object({ accountId: z.string().min(1).max(64), path: remotePathSchema }).strict(),
+    result: fileListResultSchema,
+  },
   'history.list': {
     params: z
       .object({ limit: z.number().int().min(1).max(HISTORY_MAX_LIMIT).optional() })
@@ -98,6 +173,8 @@ export const isRpcMethodName = (name: string): name is RpcMethodName =>
 export const RENDERER_ALLOWED_METHODS = [
   'status.get',
   'history.list',
+  'accounts.list',
+  'files.list',
 ] as const satisfies readonly RpcMethodName[];
 export type RendererMethodName = (typeof RENDERER_ALLOWED_METHODS)[number];
 

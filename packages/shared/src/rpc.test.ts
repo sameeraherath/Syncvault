@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { rpcRequestSchema, rpcResponseSchema } from './rpc.js';
-import { isRendererMethod, rpcMethods, statusGetResultSchema } from './methods.js';
+import {
+  REMOTE_PATH_MAX_LENGTH,
+  isSafeRemotePath,
+  isRendererMethod,
+  rpcMethods,
+  statusGetResultSchema,
+} from './methods.js';
 import { platformKey } from './platform.js';
 
 describe('rpcRequestSchema', () => {
@@ -85,5 +91,57 @@ describe('platformKey', () => {
     expect(platformKey('linux', 'x64')).toBe('linux-x64');
     expect(platformKey('win32', 'x64')).toBe('win32-x64');
     expect(platformKey('freebsd', 'x64')).toBeNull();
+  });
+});
+
+describe('isSafeRemotePath', () => {
+  it.each([
+    '',
+    'Work',
+    'Work/2026',
+    'Taxes 2026/Q1 receipts',
+    'Fotos/Ünïcödé',
+    'a/b/c.txt',
+    '...hidden',
+  ])('accepts %j', (p) => expect(isSafeRemotePath(p)).toBe(true));
+
+  it.each([
+    ['..'],
+    ['Work/../etc'],
+    ['./Work'],
+    ['/etc/passwd'],
+    ['Work/'],
+    ['Work//2026'],
+    ['C:\\Windows'],
+    ['Work\u0000x'],
+    ['Work\nfile'],
+    ['a'.repeat(REMOTE_PATH_MAX_LENGTH + 1)],
+  ])('rejects %j', (p) => expect(isSafeRemotePath(p)).toBe(false));
+});
+
+describe('files.list schemas', () => {
+  const params = rpcMethods['files.list'].params;
+
+  it('requires an account id and a safe path, nothing else', () => {
+    expect(params.safeParse({ accountId: 'a1', path: '' }).success).toBe(true);
+    expect(params.safeParse({ accountId: 'a1', path: 'Work/2026' }).success).toBe(true);
+    expect(params.safeParse({ accountId: 'a1', path: '../x' }).success).toBe(false);
+    expect(params.safeParse({ accountId: '', path: '' }).success).toBe(false);
+    expect(params.safeParse({ path: '' }).success).toBe(false);
+    // The renderer may never choose the rclone remote itself.
+    expect(params.safeParse({ accountId: 'a1', path: '', fs: '/' }).success).toBe(false);
+  });
+
+  it('accepts each result shape', () => {
+    const result = rpcMethods['files.list'].result;
+    expect(result.safeParse({ state: 'ok', entries: [], truncated: false }).success).toBe(true);
+    expect(result.safeParse({ state: 'encrypted' }).success).toBe(true);
+    expect(result.safeParse({ state: 'error', reason: 'listFailed' }).success).toBe(true);
+    expect(result.safeParse({ state: 'error', reason: 'some raw message' }).success).toBe(false);
+  });
+
+  it('exposes accounts.list and files.list to the renderer', () => {
+    expect(isRendererMethod('accounts.list')).toBe(true);
+    expect(isRendererMethod('files.list')).toBe(true);
   });
 });

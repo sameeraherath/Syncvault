@@ -1,10 +1,10 @@
 import { t, type TranslationKey } from '../i18n';
 
-export type PageId = 'welcome' | 'dashboard' | 'syncFolders' | 'accounts' | 'activity' | 'settings';
+export type PageId = 'welcome' | 'dashboard' | 'files' | 'accounts' | 'activity' | 'settings';
 
 const items: { id: PageId; label: TranslationKey }[] = [
   { id: 'dashboard', label: 'nav.dashboard' },
-  { id: 'syncFolders', label: 'nav.syncFolders' },
+  { id: 'files', label: 'nav.files' },
   { id: 'accounts', label: 'nav.accounts' },
   { id: 'activity', label: 'nav.activity' },
   { id: 'settings', label: 'nav.settings' },
