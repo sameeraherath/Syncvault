@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card, PageHeader } from '../components/Page';
+import { StatusCard } from '../components/StatusCard';
 import { t } from '../i18n';
 import {
   applyTheme,
@@ -53,6 +54,9 @@ export const SettingsPage = (): React.JSX.Element => {
           </div>
         </fieldset>
       </Card>
+      <div className="mb-6">
+        <StatusCard />
+      </div>
       <Card>
         <button
           type="button"

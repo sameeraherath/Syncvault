@@ -85,7 +85,27 @@
       }
     },
     "dashboard": {
-      "title": "Dashboard"
+      "title": "Dashboard",
+      "loading": "Loading…",
+      "loadError": "Couldn't load the dashboard: {{message}}",
+      "overall": {
+        "empty": "No sync folders yet",
+        "ok": "Everything is in sync",
+        "syncing": "Syncing…",
+        "paused": "A sync is waiting for your review",
+        "error": "Some folders couldn't sync"
+      },
+      "lastSync": "Last sync {{time}}",
+      "neverSynced": "Not synced yet",
+      "connected": "Connected",
+      "noAccounts": "No cloud accounts linked yet.",
+      "addAccount": "Add account",
+      "today": "Today's activity",
+      "noActivityToday": "Nothing has happened today.",
+      "demo": {
+        "toggle": "Show demo data",
+        "notice": "Demo data: these folders and accounts are fake. Only visible in development builds."
+      }
     },
     "files": {
       "title": "Files",
