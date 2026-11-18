@@ -18,3 +18,14 @@ await build({
   define: { __CORE_VERSION__: JSON.stringify(pkg.version) },
   logLevel: 'info',
 });
+
+// Run by rclone via --password-command when encrypting a new rclone.conf (see rclone/args.ts).
+await build({
+  entryPoints: ['src/rclone/password-helper.ts'],
+  outfile: 'dist/password-helper.mjs',
+  bundle: true,
+  platform: 'node',
+  format: 'esm',
+  target: 'node22',
+  logLevel: 'info',
+});

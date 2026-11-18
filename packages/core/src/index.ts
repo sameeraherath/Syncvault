@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   CORE_READY_LINE,
   rpcMethods,
@@ -13,6 +14,7 @@ import { listHistory } from './db/history.js';
 import { listFiles } from './files/list.js';
 import { RcloneProcess } from './rclone/process.js';
 import { startRpcServer, type RpcServer } from './rpc/server.js';
+import { Vault } from './vault/vault.js';
 
 /**
  * Syncvault core service. Spawned by Electron main with ELECTRON_RUN_AS_NODE=1.
@@ -40,7 +42,21 @@ const main = async (): Promise<void> => {
     binaryPath: config.rcloneBinary,
     appDataDir: config.appDataDir,
     logger: createLogger('rclone', config.logLevel),
+    // Built next to core.mjs (dev: packages/core/dist, packaged: resources/core).
+    helperScript: path.join(path.dirname(fileURLToPath(import.meta.url)), 'password-helper.mjs'),
   });
+
+  // The core always starts locked: the key exists only in memory, so a restart forgets it.
+  const vault = new Vault({ filePath: path.join(config.appDataDir, 'vault.json') });
+
+  /** rclone runs only while the vault is unlocked: its config can't be read without the key. */
+  const startRclone = (): void => {
+    const pass = vault.rcloneConfigPass();
+    if (!pass) return;
+    void rclone.start(pass).then((res) => {
+      if (!res.ok) logger.warn('rclone not running', { reason: res.error });
+    });
+  };
 
   let rpc: RpcServer | null = null;
   let shuttingDown = false;
@@ -51,6 +67,7 @@ const main = async (): Promise<void> => {
     await rclone
       .stop()
       .catch((e: unknown) => logger.error('rclone stop failed', { error: errorMessage(e) }));
+    vault.lock();
     await rpc?.close().catch(() => undefined);
     db?.close();
     process.exit(code);
@@ -87,6 +104,43 @@ const main = async (): Promise<void> => {
           rpcMethods['files.list'].params.parse(params),
         );
       },
+      'vault.status': async () => ({ state: await vault.state() }),
+      'vault.create': async (params) => {
+        const { password } = rpcMethods['vault.create'].params.parse(params);
+        const res = await vault.create(password);
+        if (!res.ok) return { ok: false as const, reason: res.error };
+        logger.info('vault created');
+        startRclone();
+        return { ok: true as const, recoveryKey: res.value.recoveryKey };
+      },
+      'vault.unlock': async (params) => {
+        const { password } = rpcMethods['vault.unlock'].params.parse(params);
+        const res = await vault.unlock(password);
+        if (!res.ok) {
+          logger.info('vault unlock failed', { reason: res.error });
+          return { ok: false as const, reason: res.error };
+        }
+        logger.info('vault unlocked');
+        startRclone();
+        return { ok: true as const };
+      },
+      'vault.recover': async (params) => {
+        const p = rpcMethods['vault.recover'].params.parse(params);
+        const res = await vault.recover(p.recoveryKey, p.newPassword);
+        if (!res.ok) {
+          logger.info('vault recovery failed', { reason: res.error });
+          return { ok: false as const, reason: res.error };
+        }
+        logger.info('vault recovered with recovery key');
+        startRclone();
+        return { ok: true as const };
+      },
+      'vault.lock': async () => {
+        vault.lock();
+        await rclone.stop();
+        logger.info('vault locked');
+        return { ok: true as const };
+      },
       'core.shutdown': () => {
         setImmediate(() => void shutdown(0));
         return { ok: true as const };
@@ -101,10 +155,6 @@ const main = async (): Promise<void> => {
   process.stdin.on('end', () => void shutdown(0));
   process.on('SIGTERM', () => void shutdown(0));
   process.on('SIGINT', () => void shutdown(0));
-
-  void rclone.start().then((res) => {
-    if (!res.ok) logger.warn('rclone not running', { reason: res.error });
-  });
 };
 
 main().catch((e: unknown) => {

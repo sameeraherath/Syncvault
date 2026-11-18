@@ -15,6 +15,8 @@ export interface RcdOptions {
   cacheDir: string;
   user: string;
   pass: string;
+  /** rclone config encryption password, derived from the vault. Env only. */
+  configPass: string;
   baseEnv: NodeJS.ProcessEnv;
 }
 
@@ -43,12 +45,50 @@ export const buildRcdLaunch = (opts: RcdOptions): RcdLaunch => ({
     `--cache-dir=${opts.cacheDir}`,
     '--ask-password=false',
     '--log-level=NOTICE',
-    // TODO(security): encrypted rclone.conf — supply RCLONE_CONFIG_PASS (from the vault)
-    // or --password-command here. Never write the config password to disk.
   ],
   env: {
     ...sanitizeEnv(opts.baseEnv),
     RCLONE_RC_USER: opts.user,
     RCLONE_RC_PASS: opts.pass,
+    // Decrypts (and re-encrypts on save) Syncvault's rclone.conf. Never argv, never disk.
+    RCLONE_CONFIG_PASS: opts.configPass,
   },
 });
+
+/** Child-only env var the password helper prints. Stripped from every other child by sanitizeEnv. */
+export const PASSWORD_HELPER_ENV = 'SYNCVAULT_RCLONE_NEW_PASS';
+
+export interface EncryptConfigOptions {
+  configPath: string;
+  configPass: string;
+  /** Electron binary (process.execPath in the core). */
+  nodeBinary: string;
+  /** dist/password-helper.mjs — prints PASSWORD_HELPER_ENV to stdout. */
+  helperScript: string;
+  baseEnv: NodeJS.ProcessEnv;
+}
+
+/**
+ * `rclone config encryption set` for an empty config. rclone gets the new password from
+ * --password-command, which runs our helper; the password itself only travels in the env.
+ */
+export const buildEncryptConfigLaunch = (opts: EncryptConfigOptions): RcdLaunch => ({
+  args: [
+    `--config=${opts.configPath}`,
+    '--ask-password=false',
+    `--password-command=${quoteArg(opts.nodeBinary)} ${quoteArg(opts.helperScript)}`,
+    'config',
+    'encryption',
+    'set',
+  ],
+  env: {
+    ...sanitizeEnv(opts.baseEnv),
+    ELECTRON_RUN_AS_NODE: '1',
+    [PASSWORD_HELPER_ENV]: opts.configPass,
+  },
+});
+
+/** rclone splits --password-command like a CSV row: wrap in quotes, double any quote inside. */
+const quoteArg = (s: string): string => `"${s.replace(/"/g, '""')}"`;
+
+export const ENCRYPTED_CONFIG_HEADER = '# Encrypted rclone configuration File';
