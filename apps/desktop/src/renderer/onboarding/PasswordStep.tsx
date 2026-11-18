@@ -1,18 +1,14 @@
 import { useId, useState, type FormEvent } from 'react';
-import { PrimaryButton, SecondaryButton } from '../components/Page';
+import { PrimaryButton, inputClass } from '../components/Page';
 import { t } from '../i18n';
 import { MIN_PASSWORD_LENGTH, validatePassword, type PasswordError } from './flow';
-import { PreviewNotice, StepHeading } from './StepParts';
-
-const inputClass =
-  'min-h-touch w-full rounded-md border border-border bg-card px-3 text-base dark:border-ink dark:bg-ink aria-[invalid=true]:border-error-text';
+import { StepHeading } from './StepParts';
 
 /**
  * The password lives only in this component's state. It is passed to `onSubmit` once
  * and is dropped when the step unmounts. Never log it.
  */
 export const PasswordStep = (props: {
-  onBack: () => void;
   onSubmit: (password: string) => void;
   busy: boolean;
   submitError: string | null;
@@ -51,7 +47,6 @@ export const PasswordStep = (props: {
     <form onSubmit={submit} noValidate>
       <StepHeading>{t('pages.welcome.password.title')}</StepHeading>
       <p className="mb-4 text-text-muted dark:text-white/70">{t('pages.welcome.password.body')}</p>
-      <PreviewNotice />
 
       <label htmlFor={ids.password} className="mb-1 block text-sm font-medium">
         {t('pages.welcome.password.label')}
@@ -108,10 +103,7 @@ export const PasswordStep = (props: {
         {t('pages.welcome.password.warning')}
       </p>
 
-      <div className="mt-6 flex justify-between">
-        <SecondaryButton onClick={props.onBack} disabled={props.busy}>
-          {t('pages.welcome.back')}
-        </SecondaryButton>
+      <div className="mt-6 flex justify-end">
         <PrimaryButton type="submit" disabled={props.busy}>
           {t('pages.welcome.continue')}
         </PrimaryButton>

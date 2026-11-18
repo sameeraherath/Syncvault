@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import { PrimaryButton, SecondaryButton } from '../components/Page';
 import { t } from '../i18n';
-import { PreviewNotice, StepHeading } from './StepParts';
+import { StepHeading } from './StepParts';
 
 type CopyState = 'idle' | 'copied' | 'failed';
 
@@ -26,7 +26,6 @@ export const RecoveryKeyStep = (props: {
       <p className="mb-4 text-text-muted dark:text-white/70">
         {t('pages.welcome.recoveryKey.body')}
       </p>
-      <PreviewNotice />
 
       <p id={`${id}-label`} className="mb-1 text-sm font-medium">
         {t('pages.welcome.recoveryKey.label')}

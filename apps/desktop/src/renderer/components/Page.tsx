@@ -46,6 +46,10 @@ export const SecondaryButton = (props: ButtonProps): React.JSX.Element => (
   </button>
 );
 
+/** Text input style shared by the password and recovery forms. */
+export const inputClass =
+  'min-h-touch w-full rounded-md border border-border bg-card px-3 text-base dark:border-ink dark:bg-ink aria-[invalid=true]:border-error-text';
+
 export const EmptyState = (props: { text: string }): React.JSX.Element => (
   <Card>
     <p className="text-text-muted dark:text-white/70">{props.text}</p>

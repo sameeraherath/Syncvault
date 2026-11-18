@@ -1,24 +1,17 @@
 import { useState } from 'react';
-import { Card } from '../components/Page';
+import { AuthLayout } from '../components/AuthLayout';
 import type { PageId } from '../components/Sidebar';
 import { t } from '../i18n';
 import { DoneStep } from '../onboarding/DoneStep';
-import {
-  COUNTED_STEPS,
-  nextStep,
-  prevStep,
-  stepNumber,
-  type OnboardingStep,
-} from '../onboarding/flow';
-import { IntroStep } from '../onboarding/IntroStep';
-import { createVault } from '../onboarding/mockVault';
+import { nextStep, stepStates, type OnboardingStep } from '../onboarding/flow';
 import { PasswordStep } from '../onboarding/PasswordStep';
 import { RecoveryKeyStep } from '../onboarding/RecoveryKeyStep';
 
-// First-run onboarding: intro → master password → recovery key → done.
-// TODO(ui): show Welcome automatically on first run only (needs a core 'vault.status' RPC).
-export const WelcomePage = (props: { onNavigate: (id: PageId) => void }): React.JSX.Element => {
-  const [step, setStep] = useState<OnboardingStep>('intro');
+// First-run setup: master password → recovery key → done.
+// Shown by App while no vault exists. The core creates the vault (and keeps it unlocked);
+// `onFinish` tells App to re-check the vault and show the normal pages.
+export const WelcomePage = (props: { onFinish: (page: PageId) => void }): React.JSX.Element => {
+  const [step, setStep] = useState<OnboardingStep>('password');
   const [recoveryKey, setRecoveryKey] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -26,12 +19,14 @@ export const WelcomePage = (props: { onNavigate: (id: PageId) => void }): React.
   const createWithPassword = async (password: string): Promise<void> => {
     setBusy(true);
     setSubmitError(null);
-    const res = await createVault(password);
+    const res = await window.syncvault.rpc('vault.create', { password });
     setBusy(false);
     if (!res.ok) {
-      setSubmitError(
-        t('pages.welcome.password.errors.createFailed', { message: res.error.message }),
-      );
+      setSubmitError(t('pages.welcome.password.errors.createFailed'));
+      return;
+    }
+    if (!res.value.ok) {
+      setSubmitError(t('pages.welcome.password.errors.exists'));
       return;
     }
     setRecoveryKey(res.value.recoveryKey);
@@ -43,19 +38,12 @@ export const WelcomePage = (props: { onNavigate: (id: PageId) => void }): React.
     setStep(nextStep);
   };
 
-  const current = stepNumber(step);
+  const steps = stepStates(step).map((s) => ({ label: t(`auth.steps.${s.step}`), state: s.state }));
 
   return (
-    <Card className="mx-auto max-w-xl">
-      {current !== null && (
-        <p className="mb-4 text-sm text-text-muted dark:text-white/70">
-          {t('pages.welcome.stepOf', { current, total: COUNTED_STEPS.length })}
-        </p>
-      )}
-      {step === 'intro' && <IntroStep onStart={() => setStep(nextStep)} />}
+    <AuthLayout steps={steps}>
       {step === 'password' && (
         <PasswordStep
-          onBack={() => setStep(prevStep)}
           onSubmit={(pw) => void createWithPassword(pw)}
           busy={busy}
           submitError={submitError}
@@ -64,7 +52,7 @@ export const WelcomePage = (props: { onNavigate: (id: PageId) => void }): React.
       {step === 'recoveryKey' && recoveryKey !== null && (
         <RecoveryKeyStep recoveryKey={recoveryKey} onContinue={finish} />
       )}
-      {step === 'done' && <DoneStep onAddAccount={() => props.onNavigate('accounts')} />}
-    </Card>
+      {step === 'done' && <DoneStep onAddAccount={() => props.onFinish('accounts')} />}
+    </AuthLayout>
   );
 };
