@@ -127,6 +127,29 @@ export const fileListResultSchema = z.discriminatedUnion('state', [
 ]);
 export type FileListResult = z.infer<typeof fileListResultSchema>;
 
+/** Master password rules, shared by the onboarding UI and the core. Counted in code points. */
+export const MIN_PASSWORD_LENGTH = 12;
+export const MAX_PASSWORD_LENGTH = 1024;
+
+/** A new master password. Unlock accepts any non-empty password so old vaults keep working if rules change. */
+export const newPasswordSchema = z
+  .string()
+  .max(MAX_PASSWORD_LENGTH * 2)
+  .refine((p) => [...p].length >= MIN_PASSWORD_LENGTH && [...p].length <= MAX_PASSWORD_LENGTH, {
+    message: 'Invalid password length',
+  });
+const anyPasswordSchema = z
+  .string()
+  .min(1)
+  .max(MAX_PASSWORD_LENGTH * 2);
+
+export const vaultStateSchema = z.enum(['none', 'locked', 'unlocked']);
+export type VaultState = z.infer<typeof vaultStateSchema>;
+
+const okTrue = z.object({ ok: z.literal(true) });
+const failWith = <const T extends readonly [string, ...string[]]>(reasons: T) =>
+  z.object({ ok: z.literal(false), reason: z.enum(reasons) });
+
 export const rpcMethods = {
   /** Must be the first message on every connection. */
   'auth.hello': {
@@ -155,6 +178,35 @@ export const rpcMethods = {
       .optional(),
     result: z.object({ entries: z.array(historyEntrySchema) }),
   },
+  /** Whether a vault exists and whether it is unlocked. */
+  'vault.status': {
+    params: emptyParams,
+    result: z.object({ state: vaultStateSchema }),
+  },
+  /** First run. Never replaces an existing vault. Leaves the vault unlocked. */
+  'vault.create': {
+    params: z.object({ password: newPasswordSchema }).strict(),
+    result: z.union([
+      z.object({ ok: z.literal(true), recoveryKey: z.string().min(1).max(64) }),
+      failWith(['exists']),
+    ]),
+  },
+  'vault.unlock': {
+    params: z.object({ password: anyPasswordSchema }).strict(),
+    result: z.union([okTrue, failWith(['wrongPassword', 'noVault', 'corrupt'])]),
+  },
+  /** Forgotten password: unlock with the recovery key and set a new master password. */
+  'vault.recover': {
+    params: z
+      .object({ recoveryKey: z.string().min(1).max(128), newPassword: newPasswordSchema })
+      .strict(),
+    result: z.union([okTrue, failWith(['invalidKey', 'wrongKey', 'corrupt'])]),
+  },
+  /** Forgets the key from memory and stops rclone. */
+  'vault.lock': {
+    params: emptyParams,
+    result: okTrue,
+  },
   /** Graceful shutdown: core stops rclone, closes the DB and exits. */
   'core.shutdown': {
     params: emptyParams,
@@ -175,6 +227,11 @@ export const RENDERER_ALLOWED_METHODS = [
   'history.list',
   'accounts.list',
   'files.list',
+  'vault.status',
+  'vault.create',
+  'vault.unlock',
+  'vault.recover',
+  'vault.lock',
 ] as const satisfies readonly RpcMethodName[];
 export type RendererMethodName = (typeof RENDERER_ALLOWED_METHODS)[number];
 

@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@noble/hashes": "2.4.0",
     "@syncvault/shared": "workspace:*",
     "better-sqlite3": "13.0.3",
     "chokidar": "6.0.0",

@@ -1,25 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { MIN_PASSWORD_LENGTH, nextStep, prevStep, stepNumber, validatePassword } from './flow';
+import { MIN_PASSWORD_LENGTH, nextStep, stepStates, validatePassword } from './flow';
 
 describe('onboarding steps', () => {
-  it('moves forward through every step and stops at done', () => {
-    expect(nextStep('intro')).toBe('password');
+  it('starts at the password and moves forward to done', () => {
     expect(nextStep('password')).toBe('recoveryKey');
     expect(nextStep('recoveryKey')).toBe('done');
     expect(nextStep('done')).toBe('done');
   });
 
-  it('moves back and stops at intro', () => {
-    expect(prevStep('recoveryKey')).toBe('password');
-    expect(prevStep('password')).toBe('intro');
-    expect(prevStep('intro')).toBe('intro');
-  });
-
-  it('numbers the counted steps and not the done screen', () => {
-    expect(stepNumber('intro')).toBe(1);
-    expect(stepNumber('password')).toBe(2);
-    expect(stepNumber('recoveryKey')).toBe(3);
-    expect(stepNumber('done')).toBeNull();
+  it('marks steps done, current and upcoming', () => {
+    const states = (s: Parameters<typeof stepStates>[0]): string[] =>
+      stepStates(s).map((x) => x.state);
+    expect(states('password')).toEqual(['current', 'upcoming', 'upcoming']);
+    expect(states('recoveryKey')).toEqual(['done', 'current', 'upcoming']);
+    // On the final screen everything is finished.
+    expect(states('done')).toEqual(['done', 'done', 'done']);
   });
 });
 

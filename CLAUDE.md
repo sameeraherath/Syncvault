@@ -77,10 +77,14 @@ Renderer (React, sandboxed)
 - Encryption keys and the master password live **only in memory**. Never write them to disk.
 - rclone.conf holds cloud OAuth tokens and crypt settings → it must **always** be encrypted with rclone's
   config encryption. The config password is supplied at runtime (`--password-command` or
-  `RCLONE_CONFIG_PASS` in the child env), never written to disk in plain text. The config password itself is
-  protected by the vault (derived from the master password and/or stored in the OS keychain).
-  _Scaffold status: TODO — rclone currently starts with an empty, Syncvault-only config and no remotes._
-- Other secrets (e.g. the vault's wrapped key) are stored in the OS keychain only.
+  `RCLONE_CONFIG_PASS` in the child env), never written to disk in plain text. The config password is derived
+  from the vault key (HKDF), so rclone runs only while the vault is unlocked. A non-empty plain-text
+  rclone.conf is refused, never used.
+- Vault (`packages/core/src/vault`): the recovery key is the root secret (vault key = HKDF of it), so it alone can
+  rebuild every key on a new machine. The master password (Argon2id) wraps the vault key with AES-256-GCM in
+  `<appData>/vault.json` — the only key material on disk, and only in wrapped form. Never overwrite an existing
+  vault.json. The core always starts locked. (OS keychain "unlock automatically": later, optional.)
+- Other secrets are stored in the OS keychain only.
 - rclone is always started with Syncvault's own config (`--config <appData>/rclone/rclone.conf`).
   Never read or modify the user's `~/.config/rclone/rclone.conf`.
 - rclone rc: `127.0.0.1` only, random port + random user/password every start, passed via

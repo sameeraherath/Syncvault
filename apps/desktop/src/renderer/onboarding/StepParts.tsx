@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { t } from '../i18n';
 
 /**
  * Step title. Receives focus when the step appears so keyboard and screen-reader
@@ -14,10 +13,3 @@ export const StepHeading = (props: { children: string }): React.JSX.Element => {
     </h1>
   );
 };
-
-/** Orange (warning), never red: shown while the vault is still a mock. */
-export const PreviewNotice = (): React.JSX.Element => (
-  <p className="mb-6 rounded-md bg-warning-bg p-3 text-sm text-warning-text">
-    {t('pages.welcome.previewNotice')}
-  </p>
-);

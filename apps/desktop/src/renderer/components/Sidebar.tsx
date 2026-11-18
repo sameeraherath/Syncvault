@@ -1,6 +1,6 @@
 import { t, type TranslationKey } from '../i18n';
 
-export type PageId = 'welcome' | 'dashboard' | 'files' | 'accounts' | 'activity' | 'settings';
+export type PageId = 'dashboard' | 'files' | 'accounts' | 'activity' | 'settings';
 
 const items: { id: PageId; label: TranslationKey }[] = [
   { id: 'dashboard', label: 'nav.dashboard' },
@@ -8,7 +8,6 @@ const items: { id: PageId; label: TranslationKey }[] = [
   { id: 'accounts', label: 'nav.accounts' },
   { id: 'activity', label: 'nav.activity' },
   { id: 'settings', label: 'nav.settings' },
-  { id: 'welcome', label: 'nav.welcome' },
 ];
 
 export const Sidebar = (props: {

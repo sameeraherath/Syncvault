@@ -9,8 +9,9 @@ Dates are intentionally absent — this is a volunteer-driven project.
 
 ## MVP — Linux (Ubuntu, Fedora)
 
-- Vault: master password (Argon2id) + recovery key, keys in memory, OS keychain (Secret Service)
-- Encrypted rclone.conf (config password from the vault)
+- [x] Vault: master password (Argon2id) + recovery key, keys in memory
+- [x] Encrypted rclone.conf (config password from the vault)
+- OS keychain (Secret Service) for "unlock automatically"; change password in Settings; auto-lock
 - Accounts: Google Drive + OneDrive, multiple accounts each
 - Sync folders: encrypted by default (rclone crypt), automatic two-way sync (bisync) with all data-safety checks
 - Tray, notifications, Activity history

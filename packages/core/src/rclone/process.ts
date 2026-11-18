@@ -5,7 +5,12 @@ import net from 'node:net';
 import path from 'node:path';
 import { err, ok, type RcloneStatus, type Result } from '@syncvault/shared';
 import { errorMessage, type Logger } from '../log.js';
-import { buildRcdLaunch, generateRcCredentials } from './args.js';
+import {
+  ENCRYPTED_CONFIG_HEADER,
+  buildEncryptConfigLaunch,
+  buildRcdLaunch,
+  generateRcCredentials,
+} from './args.js';
 import { RcloneClient } from './client.js';
 
 const READY_TIMEOUT_MS = 15_000;
@@ -15,6 +20,10 @@ export interface RcloneProcessOptions {
   binaryPath: string;
   appDataDir: string;
   logger: Logger;
+  /** dist/password-helper.mjs, used once to encrypt a new rclone.conf. */
+  helperScript: string;
+  /** Binary that runs the helper (the Electron binary with ELECTRON_RUN_AS_NODE=1). */
+  nodeBinary?: string;
 }
 
 /** Asks the OS for a free loopback port. Small race window; start() retries on failure. */
@@ -55,7 +64,8 @@ export class RcloneProcess {
     return this.#client;
   }
 
-  async start(): Promise<Result<RcloneStatus, string>> {
+  /** Starts rclone with the vault-derived config password. Called after the vault unlocks. */
+  async start(configPass: string): Promise<Result<RcloneStatus, string>> {
     const { logger, binaryPath } = this.#opts;
     this.#status = { state: 'starting' };
 
@@ -70,10 +80,16 @@ export class RcloneProcess {
     }
 
     await this.#prepareDirs();
+    const config = await this.#ensureEncryptedConfig(configPass);
+    if (!config.ok) {
+      this.#status = { state: 'error', message: config.error };
+      logger.error('rclone config check failed', { reason: config.error });
+      return err(config.error);
+    }
     await this.#killStale();
 
     for (let attempt = 1; attempt <= 3; attempt++) {
-      const res = await this.#launch();
+      const res = await this.#launch(configPass);
       if (res.ok) return res;
       logger.warn('rclone start attempt failed', { attempt, error: res.error });
       await this.stop();
@@ -82,13 +98,61 @@ export class RcloneProcess {
     return err(this.#status.message);
   }
 
+  get #configPath(): string {
+    return path.join(this.#rcloneDir, 'rclone.conf');
+  }
+
   async #prepareDirs(): Promise<void> {
     await mkdir(this.#rcloneDir, { recursive: true, mode: 0o700 });
     await mkdir(path.join(this.#rcloneDir, 'cache'), { recursive: true, mode: 0o700 });
-    const configPath = path.join(this.#rcloneDir, 'rclone.conf');
-    // Empty Syncvault-only config. TODO(security): must be encrypted before any remote is added.
-    await writeFile(configPath, '', { flag: 'a', mode: 0o600 });
-    if (process.platform !== 'win32') await chmod(configPath, 0o600);
+    await writeFile(this.#configPath, '', { flag: 'a', mode: 0o600 });
+    if (process.platform !== 'win32') await chmod(this.#configPath, 0o600);
+  }
+
+  /**
+   * rclone.conf holds OAuth tokens, so it must always be encrypted:
+   * - encrypted → fine (rcd decrypts it with RCLONE_CONFIG_PASS),
+   * - empty → encrypt it now, before anything can be written to it,
+   * - plain text with content → refuse; never run with readable tokens on disk.
+   */
+  async #ensureEncryptedConfig(configPass: string): Promise<Result<void, string>> {
+    const text = await readFile(this.#configPath, 'utf8');
+    if (text.startsWith(ENCRYPTED_CONFIG_HEADER)) return ok(undefined);
+    if (text.trim() !== '') return err('rclone config is not encrypted');
+
+    const launch = buildEncryptConfigLaunch({
+      configPath: this.#configPath,
+      configPass,
+      nodeBinary: this.#opts.nodeBinary ?? process.execPath,
+      helperScript: this.#opts.helperScript,
+      baseEnv: process.env,
+    });
+    const child = spawn(this.#opts.binaryPath, launch.args, {
+      env: launch.env,
+      stdio: ['ignore', 'ignore', 'pipe'],
+      windowsHide: true,
+    });
+    let stderr = '';
+    child.stderr?.on('data', (d: Buffer) => (stderr += d.toString()));
+    const code = await new Promise<number | null>((resolve) => {
+      const timer = setTimeout(() => child.kill('SIGKILL'), READY_TIMEOUT_MS);
+      child.once('error', () => {
+        clearTimeout(timer);
+        resolve(null);
+      });
+      child.once('exit', (c) => {
+        clearTimeout(timer);
+        resolve(c);
+      });
+    });
+    if (code !== 0) {
+      this.#opts.logger.debug('rclone config encryption output', { stderr: stderr.trim() });
+      return err('could not encrypt rclone config');
+    }
+    const after = await readFile(this.#configPath, 'utf8');
+    return after.startsWith(ENCRYPTED_CONFIG_HEADER)
+      ? ok(undefined)
+      : err('could not encrypt rclone config');
   }
 
   /** Kills an rclone left behind by a hard crash of a previous core. */
@@ -120,16 +184,17 @@ export class RcloneProcess {
     await rm(this.#pidFile, { force: true });
   }
 
-  async #launch(): Promise<Result<RcloneStatus, string>> {
+  async #launch(configPass: string): Promise<Result<RcloneStatus, string>> {
     const { logger, binaryPath } = this.#opts;
     const port = await findFreePort();
     const { user, pass } = generateRcCredentials();
     const launch = buildRcdLaunch({
       port,
-      configPath: path.join(this.#rcloneDir, 'rclone.conf'),
+      configPath: this.#configPath,
       cacheDir: path.join(this.#rcloneDir, 'cache'),
       user,
       pass,
+      configPass,
       baseEnv: process.env,
     });
 

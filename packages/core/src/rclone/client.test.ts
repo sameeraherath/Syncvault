@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { RcloneClient } from './client.js';
-import { buildRcdLaunch, sanitizeEnv } from './args.js';
+import {
+  PASSWORD_HELPER_ENV,
+  buildEncryptConfigLaunch,
+  buildRcdLaunch,
+  sanitizeEnv,
+} from './args.js';
 
 const jsonResponse = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -70,6 +75,7 @@ describe('buildRcdLaunch', () => {
     cacheDir: '/data/rclone/cache',
     user: 'sv-user',
     pass: 'secret-pass',
+    configPass: 'config-secret',
     baseEnv: {
       PATH: '/usr/bin',
       RCLONE_CONFIG: '/home/x/.config/rclone/rclone.conf',
@@ -78,6 +84,8 @@ describe('buildRcdLaunch', () => {
   });
 
   it('never puts credentials on the command line', () => {
+    expect(launch.args.join(' ')).not.toContain('config-secret');
+    expect(launch.env.RCLONE_CONFIG_PASS).toBe('config-secret');
     expect(launch.args.join(' ')).not.toContain('secret-pass');
     expect(launch.args.join(' ')).not.toContain('sv-user');
     expect(launch.env.RCLONE_RC_USER).toBe('sv-user');
@@ -95,5 +103,29 @@ describe('buildRcdLaunch', () => {
     expect(launch.env.RCLONE_CONFIG).toBeUndefined();
     expect(launch.env.SYNCVAULT_RPC_TOKEN).toBeUndefined();
     expect(sanitizeEnv({ HOME: '/h', ELECTRON_RUN_AS_NODE: '1' })).toEqual({ HOME: '/h' });
+  });
+});
+
+describe('buildEncryptConfigLaunch', () => {
+  const launch = buildEncryptConfigLaunch({
+    configPath: '/data/my rclone/rclone.conf',
+    configPass: 'config-secret',
+    nodeBinary: '/opt/Sync "vault"/electron',
+    helperScript: '/opt/app/password-helper.mjs',
+    baseEnv: { PATH: '/usr/bin', RCLONE_CONFIG_PASS: 'stale', SYNCVAULT_RCLONE_NEW_PASS: 'x' },
+  });
+
+  it('passes the password only through the helper env', () => {
+    expect(launch.args.join(' ')).not.toContain('config-secret');
+    expect(launch.env[PASSWORD_HELPER_ENV]).toBe('config-secret');
+    expect(launch.env.RCLONE_CONFIG_PASS).toBeUndefined();
+    expect(launch.env.ELECTRON_RUN_AS_NODE).toBe('1');
+  });
+
+  it('quotes paths for rclone (spaces, embedded quotes)', () => {
+    expect(launch.args).toContain(
+      '--password-command="/opt/Sync ""vault""/electron" "/opt/app/password-helper.mjs"',
+    );
+    expect(launch.args.slice(-3)).toEqual(['config', 'encryption', 'set']);
   });
 });

@@ -13,7 +13,7 @@ extraResources:
   # Built core service (packages/core → dist/core.mjs), run with ELECTRON_RUN_AS_NODE=1.
   - from: ../../packages/core/dist
     to: core
-    filter: ['core.mjs']
+    filter: ['core.mjs', 'password-helper.mjs']
   # Pinned rclone for the target platform (downloaded by `pnpm fetch:rclone`).
   - from: ../../resources/rclone/${platform}-${arch}
     to: rclone
