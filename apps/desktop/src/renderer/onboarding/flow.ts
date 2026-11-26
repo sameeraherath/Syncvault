@@ -1,34 +1,31 @@
-import { err, ok, type Result } from '@syncvault/shared';
+import { MIN_PASSWORD_LENGTH, err, ok, type Result } from '@syncvault/shared';
+
+export { MIN_PASSWORD_LENGTH };
 
 /** Pure onboarding logic (no React) so it can be unit-tested in Node. */
 
-export const ONBOARDING_STEPS = ['intro', 'password', 'recoveryKey', 'done'] as const;
+export const ONBOARDING_STEPS = ['password', 'recoveryKey', 'done'] as const;
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number];
 
-/** Steps that count towards "Step X of Y" (the done screen is not a step). */
-export const COUNTED_STEPS = [
-  'intro',
-  'password',
-  'recoveryKey',
-] as const satisfies readonly OnboardingStep[];
+export type StepState = 'done' | 'current' | 'upcoming';
 
+/** Forward only: password is the first step, and once it's submitted the vault exists. */
 export const nextStep = (step: OnboardingStep): OnboardingStep => {
   const i = ONBOARDING_STEPS.indexOf(step);
   return ONBOARDING_STEPS[Math.min(i + 1, ONBOARDING_STEPS.length - 1)] ?? step;
 };
 
-export const prevStep = (step: OnboardingStep): OnboardingStep => {
-  const i = ONBOARDING_STEPS.indexOf(step);
-  return ONBOARDING_STEPS[Math.max(i - 1, 0)] ?? step;
+/** State of every step for the progress list. On the done screen, every step is done. */
+export const stepStates = (
+  current: OnboardingStep,
+): { step: OnboardingStep; state: StepState }[] => {
+  const i = ONBOARDING_STEPS.indexOf(current);
+  const last = ONBOARDING_STEPS.length - 1;
+  return ONBOARDING_STEPS.map((step, j) => ({
+    step,
+    state: j < i || (i === last && j === last) ? 'done' : j === i ? 'current' : 'upcoming',
+  }));
 };
-
-/** 1-based position for "Step X of Y", or null for the done screen. */
-export const stepNumber = (step: OnboardingStep): number | null => {
-  const i = (COUNTED_STEPS as readonly OnboardingStep[]).indexOf(step);
-  return i === -1 ? null : i + 1;
-};
-
-export const MIN_PASSWORD_LENGTH = 12;
 
 export type PasswordError = 'tooShort' | 'mismatch';
 

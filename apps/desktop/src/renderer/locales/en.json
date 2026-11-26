@@ -1,7 +1,20 @@
 {
   "app": {
     "name": "Syncvault",
-    "tagline": "All your clouds, in sync. Only you hold the key."
+    "tagline": "All your clouds, in sync. Only you hold the key.",
+    "loading": "Starting Syncvault…"
+  },
+  "auth": {
+    "taglineStart": "All your clouds, in sync.",
+    "taglineEnd": "Only you hold the key.",
+    "stepsLabel": "Setup progress",
+    "stepDone": "(done)",
+    "steps": {
+      "password": "Master password",
+      "recoveryKey": "Recovery key",
+      "done": "Done"
+    },
+    "privacy": "Encrypted on this device. Nobody else can read your files."
   },
   "tray": {
     "open": "Open Syncvault",
@@ -9,7 +22,6 @@
   },
   "nav": {
     "label": "Main navigation",
-    "welcome": "Welcome",
     "dashboard": "Dashboard",
     "files": "Files",
     "accounts": "Accounts",
@@ -48,13 +60,7 @@
   },
   "pages": {
     "welcome": {
-      "title": "Welcome to Syncvault",
-      "body": "Set up your master password, add a cloud account and choose a folder to keep encrypted and in sync.",
-      "cta": "Get started",
-      "stepOf": "Step {{current}} of {{total}}",
-      "back": "Back",
       "continue": "Continue",
-      "previewNotice": "Preview: this setup is not secure yet. Nothing is encrypted or saved.",
       "password": {
         "title": "Create your master password",
         "body": "This password unlocks Syncvault and encrypts your files. Only you know it.",
@@ -66,7 +72,8 @@
         "errors": {
           "tooShort": "Use at least {{min}} characters.",
           "mismatch": "The passwords don't match.",
-          "createFailed": "Couldn't set up your vault: {{message}}"
+          "createFailed": "Couldn't set up your vault. Please try again.",
+          "exists": "A vault already exists on this computer. Restart Syncvault to unlock it."
         }
       },
       "recoveryKey": {
@@ -82,6 +89,36 @@
         "title": "You're set up",
         "body": "Next, connect a cloud account like Google Drive or OneDrive.",
         "addAccount": "Add a cloud account"
+      }
+    },
+    "unlock": {
+      "title": "Unlock Syncvault",
+      "body": "Enter your master password to start syncing.",
+      "label": "Master password",
+      "show": "Show password",
+      "submit": "Unlock",
+      "busy": "Unlocking…",
+      "forgot": "Forgot your password? Use your recovery key",
+      "errors": {
+        "wrongPassword": "That password isn't right. Try again.",
+        "noVault": "No vault was found. Restart Syncvault to set one up.",
+        "corrupt": "Your vault file can't be read. Use your recovery key to set a new password.",
+        "failed": "Couldn't unlock right now. Please try again."
+      },
+      "recover": {
+        "title": "Use your recovery key",
+        "body": "Enter the recovery key you saved when you set up Syncvault, then choose a new master password.",
+        "keyLabel": "Recovery key",
+        "newPasswordLabel": "New master password",
+        "confirmLabel": "Confirm new master password",
+        "submit": "Set password and unlock",
+        "back": "Back",
+        "errors": {
+          "invalidKey": "That recovery key isn't valid. Check it for typos.",
+          "wrongKey": "That recovery key belongs to a different vault.",
+          "corrupt": "Your vault file can't be read. Move vault.json out of the Syncvault settings folder, then try again.",
+          "failed": "Couldn't use the recovery key right now. Please try again."
+        }
       }
     },
     "dashboard": {
@@ -175,7 +212,10 @@
       "themeSystem": "System",
       "themeLight": "Light",
       "themeDark": "Dark",
-      "website": "Visit getsyncvault.com"
+      "website": "Visit getsyncvault.com",
+      "security": "Security",
+      "lockNow": "Lock now",
+      "lockHint": "Forgets your keys from memory and stops syncing until you unlock again."
     }
   },
   "common": {

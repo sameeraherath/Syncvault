@@ -18,6 +18,13 @@ const handlers: RpcHandlers = {
   'history.list': vi.fn(() => ({ entries: [] })),
   'accounts.list': vi.fn(() => ({ accounts: [] })),
   'files.list': vi.fn(() => ({ state: 'encrypted' as const })),
+  'vault.status': vi.fn(() => ({ state: 'locked' as const })),
+  'vault.create': vi.fn(() => ({ ok: true as const, recoveryKey: 'KEY' })),
+  'vault.unlock': vi.fn(() => {
+    throw new Error('boom');
+  }),
+  'vault.recover': vi.fn(() => ({ ok: true as const })),
+  'vault.lock': vi.fn(() => ({ ok: true as const })),
   'core.shutdown': vi.fn(() => ({ ok: true as const })),
 };
 
@@ -84,5 +91,22 @@ describe('dispatchMessage', () => {
   it('compares tokens in constant time regardless of length', () => {
     expect(tokensEqual(TOKEN, TOKEN)).toBe(true);
     expect(tokensEqual('short', TOKEN)).toBe(false);
+  });
+
+  it('never logs request params (they can hold the master password)', async () => {
+    const lines: string[] = [];
+    const capture = createLogger('test', 'debug', (l) => lines.push(l));
+    const state = { authenticated: true };
+    const secret = 'my super secret master password';
+    const out = await dispatchMessage(
+      msg('vault.unlock', { password: secret }),
+      state,
+      TOKEN,
+      handlers,
+      capture,
+    );
+    expect(out.response).toMatchObject({ error: { code: RpcErrorCode.InternalError } });
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.join('\n')).not.toContain(secret);
   });
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, PageHeader } from '../components/Page';
+import { Card, PageHeader, PrimaryButton } from '../components/Page';
 import { StatusCard } from '../components/StatusCard';
 import { t } from '../i18n';
 import {
@@ -15,8 +15,16 @@ const options: { value: ThemePreference; label: Parameters<typeof t>[0] }[] = [
   { value: 'dark', label: 'pages.settings.themeDark' },
 ];
 
-export const SettingsPage = (): React.JSX.Element => {
+export const SettingsPage = (props: { onLocked: () => void }): React.JSX.Element => {
   const [theme, setTheme] = useState<ThemePreference>(loadThemePreference);
+  const [locking, setLocking] = useState(false);
+
+  const lockNow = async (): Promise<void> => {
+    setLocking(true);
+    await window.syncvault.rpc('vault.lock');
+    setLocking(false);
+    props.onLocked();
+  };
 
   const choose = (value: ThemePreference): void => {
     setTheme(value);
@@ -27,6 +35,15 @@ export const SettingsPage = (): React.JSX.Element => {
   return (
     <>
       <PageHeader title={t('pages.settings.title')} />
+      <Card className="mb-6">
+        <h2 className="mb-1 font-semibold">{t('pages.settings.security')}</h2>
+        <p className="mb-4 text-sm text-text-muted dark:text-white/70">
+          {t('pages.settings.lockHint')}
+        </p>
+        <PrimaryButton onClick={() => void lockNow()} disabled={locking}>
+          {t('pages.settings.lockNow')}
+        </PrimaryButton>
+      </Card>
       <Card className="mb-6">
         <fieldset>
           <legend className="mb-3 font-semibold">{t('pages.settings.theme')}</legend>

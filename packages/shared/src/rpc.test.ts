@@ -145,3 +145,38 @@ describe('files.list schemas', () => {
     expect(isRendererMethod('files.list')).toBe(true);
   });
 });
+
+describe('vault methods', () => {
+  it('are callable from the renderer', () => {
+    for (const m of [
+      'vault.status',
+      'vault.create',
+      'vault.unlock',
+      'vault.recover',
+      'vault.lock',
+    ]) {
+      expect(isRendererMethod(m)).toBe(true);
+    }
+  });
+
+  it('require a new password of at least 12 code points', () => {
+    const create = rpcMethods['vault.create'].params;
+    expect(create.safeParse({ password: 'a'.repeat(11) }).success).toBe(false);
+    expect(create.safeParse({ password: 'a'.repeat(12) }).success).toBe(true);
+    // 11 emoji = 22 UTF-16 units but only 11 code points.
+    expect(create.safeParse({ password: '🔒'.repeat(11) }).success).toBe(false);
+    expect(create.safeParse({ password: 'a'.repeat(12), extra: 1 }).success).toBe(false);
+  });
+
+  it('accepts any non-empty password for unlock', () => {
+    const unlock = rpcMethods['vault.unlock'].params;
+    expect(unlock.safeParse({ password: 'short' }).success).toBe(true);
+    expect(unlock.safeParse({ password: '' }).success).toBe(false);
+  });
+
+  it('only returns known failure reasons', () => {
+    const result = rpcMethods['vault.unlock'].result;
+    expect(result.safeParse({ ok: false, reason: 'wrongPassword' }).success).toBe(true);
+    expect(result.safeParse({ ok: false, reason: 'some raw message' }).success).toBe(false);
+  });
+});
